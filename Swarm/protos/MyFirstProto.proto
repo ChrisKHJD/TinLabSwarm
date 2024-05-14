@@ -1,0 +1,39 @@
+#VRML_SIM R2023a utf8
+PROTO MyFirstProto [
+  field SFVec3f    translation  0 0 0.1
+  field SFRotation rotation     0 0 1 0
+  field SFFloat    bodyMass     1
+  field SFBool     supervisor  TRUE
+  field SFString   name         "NoName"
+  field SFColor    BodyColor         1 1 1
+  field SFVec3f    velocity  0 0 0           
+  field SFString   controller         "robots_listing"
+  field SFVec3f    force     0 0 0
+]
+{ Robot {
+    translation IS translation
+    rotation IS rotation
+    velocity IS velocity
+    force IS force
+    name IS name
+    supervisor IS supervisor
+    controller IS controller
+
+    children [
+      DEF BODY Shape {
+        appearance PBRAppearance {
+          baseColor IS BodyColor
+          roughness 0
+          metalness 1
+        }
+        geometry Box {
+          size 0.2 0.2 0.2
+        }
+  } ]
+    boundingObject USE BODY
+    physics Physics {
+      density -1
+      mass IS bodyMass
+    }
+  }
+  }

@@ -1,0 +1,659 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+IMPORTABLE EXTERNPROTO "../protos/MyFirstProto.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.6558999242466389 0.007640514902473111 0.7548091890705084 3.124012019074886
+  position 3.77768160456445 -0.4235744529010905 24.33495588883821
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 15 15
+}
+DEF ROBOT0 MyFirstProto {
+  translation 1.6198307790386746e-09 1.1800000016198302 0.09960760087183422
+  supervisor FALSE
+  name "robo0"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT1 MyFirstProto {
+  translation 1.19 1.89 0.099608
+  supervisor FALSE
+  name "robo1"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT2 MyFirstProto {
+  translation 1.29 -3.37 0.199608
+  supervisor FALSE
+  name "robo2"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT3 MyFirstProto {
+  translation 1.39 -2.65 0.299608
+  supervisor FALSE
+  name "robo3"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT4 MyFirstProto {
+  translation 1.49 -1.78 0.399608
+  supervisor FALSE
+  name "robo4"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT5 MyFirstProto {
+  translation 1.59 -0.87 0.499608
+  supervisor FALSE
+  name "robo5"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT6 MyFirstProto {
+  translation 1.69 0.52 0.599608
+  supervisor FALSE
+  name "robo6"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT7 MyFirstProto {
+  translation 1.79 1.71 0.699608
+  supervisor FALSE
+  name "robo7"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT8 MyFirstProto {
+  translation 1.89 1.61 0.799608
+  supervisor FALSE
+  name "robo8"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT9 MyFirstProto {
+  translation 1.99 1.51 0.899608
+  supervisor FALSE
+  name "robo9"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT10 MyFirstProto {
+  translation 2.09 1.41 0.999608
+  supervisor FALSE
+  name "robo10"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT11 MyFirstProto {
+  translation 2.19 1.31 1.099608
+  supervisor FALSE
+  name "robo11"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT12 MyFirstProto {
+  translation 2.29 1.21 1.199608
+  supervisor FALSE
+  name "robo12"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT13 MyFirstProto {
+  translation 2.39 1.11 1.299608
+  supervisor FALSE
+  name "robo13"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT14 MyFirstProto {
+  translation 2.49 1.01 1.399608
+  supervisor FALSE
+  name "robo14"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT15 MyFirstProto {
+  translation 2.59 0.91 1.499608
+  supervisor FALSE
+  name "robo15"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT16 MyFirstProto {
+  translation 2.69 0.81 1.599608
+  supervisor FALSE
+  name "robo16"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT17 MyFirstProto {
+  translation 2.79 0.71 1.699608
+  supervisor FALSE
+  name "robo17"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT18 MyFirstProto {
+  translation 2.89 0.61 1.799608
+  supervisor FALSE
+  name "robo18"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT19 MyFirstProto {
+  translation 2.99 0.51 1.899608
+  supervisor FALSE
+  name "robo19"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT20 MyFirstProto {
+  translation 3.09 0.41 1.999608
+  supervisor FALSE
+  name "robo20"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT21 MyFirstProto {
+  translation 3.19 0.31 2.099608
+  supervisor FALSE
+  name "robo21"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT22 MyFirstProto {
+  translation 3.29 0.21 2.199608
+  supervisor FALSE
+  name "robo22"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT23 MyFirstProto {
+  translation 3.39 0.11 2.299608
+  supervisor FALSE
+  name "robo23"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT24 MyFirstProto {
+  translation 3.49 -0.01 2.399608
+  supervisor FALSE
+  name "robo24"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT25 MyFirstProto {
+  translation 3.59 -0.11 2.499608
+  supervisor FALSE
+  name "robo25"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT26 MyFirstProto {
+  translation 3.69 0.21 2.599608
+  supervisor FALSE
+  name "robo26"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF ROBOT27 MyFirstProto {
+  translation 3.79 0.31 2.699608
+  supervisor FALSE
+  name "robo27"
+  BodyColor 0 1 0
+  controller "<none>"
+}
+DEF OBSTACLE0 MyFirstProto {
+  translation 6 3.1 0.1
+  supervisor FALSE
+  name "obstacle0"
+  BodyColor 0 0 1
+  controller "<none>"
+}
+DEF OBSTACLE1 MyFirstProto {
+  translation 5.97 3.63 0.1
+  supervisor FALSE
+  name "obstacle0(1)"
+  BodyColor 0 0 1
+  controller "<none>"
+}
+DEF OBJECTIVE0 MyFirstProto {
+  translation 6.33 -2.63 0.109608
+  supervisor FALSE
+  name "objective"
+  BodyColor 1 0 0
+  controller "<none>"
+}
+Robot {
+  name "Supervisor"
+  controller "supervisor_controller"
+  supervisor TRUE
+}
+DEF DigitTop0 Robot {
+  translation -3.22 -2.85 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  controller "<none>"
+}
+DEF DigitMid0 Robot {
+  translation -2.03 -2.85 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(1)"
+  controller "<none>"
+}
+DEF DigitBottom0 Robot {
+  translation -0.87 -2.85 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(2)"
+  controller "<none>"
+}
+DEF DigitTopLeft0 Robot {
+  translation -2.62 -3.37 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(3)"
+  controller "<none>"
+}
+DEF DigitTopRight0 Robot {
+  translation -2.67 -2.34 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(4)"
+  controller "<none>"
+}
+DEF DigitBottomLeft0 Robot {
+  translation -1.44 -3.34 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(5)"
+  controller "<none>"
+}
+DEF DigitBottomRight0 Robot {
+  translation -1.45 -2.34 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(6)"
+  controller "<none>"
+}
+DEF DigitTop1 Robot {
+  translation -3.22 -0.78 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot05"
+  controller "<none>"
+}
+DEF DigitMid1 Robot {
+  translation -2.03 -0.78 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(1)5"
+  controller "<none>"
+}
+DEF DigitBottom1 Robot {
+  translation -0.87 -0.78 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(2)5"
+  controller "<none>"
+}
+DEF DigitTopLeft1 Robot {
+  translation -2.62 -1.3 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(3)5"
+  controller "<none>"
+}
+DEF DigitTopRight1 Robot {
+  translation -2.67 -0.27 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(4)5"
+  controller "<none>"
+}
+DEF DigitBottomLeft1 Robot {
+  translation -1.44 -1.27 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(5)5"
+}
+DEF DigitBottomRight1 Robot {
+  translation -1.45 -0.27 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(6)5"
+  controller "<none>"
+}
+DEF DigitTop2 Robot {
+  translation -3.22 1.72 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot126"
+  controller "<none>"
+}
+DEF DigitMid2 Robot {
+  translation -2.03 1.72 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(1)6"
+  controller "<none>"
+}
+DEF DigitBottom2 Robot {
+  translation -0.87 1.72 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(2)6"
+  controller "<none>"
+}
+DEF DigitTopLeft2 Robot {
+  translation -2.62 1.2 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(3)6"
+  controller "<none>"
+}
+DEF DigitTopRight2 Robot {
+  translation -2.67 2.23 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(4)6"
+}
+DEF DigitBottomLeft2 Robot {
+  translation -1.44 1.2 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(5)6"
+  controller "<none>"
+}
+DEF DigitBottomRight2 Robot {
+  translation -1.45 2.23 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(6)6"
+  controller "<none>"
+}
+DEF DigitTop3 Robot {
+  translation -3.22 3.79 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot677"
+  controller "<none>"
+}
+DEF DigitMid3 Robot {
+  translation -2.03 3.79 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(17)"
+  controller "<none>"
+}
+DEF DigitBottom3 Robot {
+  translation -0.87 3.79 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(2)7"
+  controller "<none>"
+}
+DEF DigitTopLeft3 Robot {
+  translation -2.62 3.27 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(3)7"
+  controller "<none>"
+}
+DEF DigitTopRight3 Robot {
+  translation -2.67 4.3 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(4)7"
+  controller "<none>"
+}
+DEF DigitBottomLeft3 Robot {
+  translation -1.44 3.27 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(5)7"
+  controller "<none>"
+}
+DEF DigitBottomRight3 Robot {
+  translation -1.45 4.3 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.333333 1 1
+      }
+      geometry Plane {
+        size 0.001 0.001
+      }
+    }
+  ]
+  name "robot(6)7"
+  controller "<none>"
+}
