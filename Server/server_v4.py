@@ -10,7 +10,7 @@ PORT = 8000
 connectedClients = {} #id, ip, port
 robots = {} #id, location, direction, last message time
 
-async def client_init(client_socket, client_address):
+def client_init(client_socket, client_address):
     global robots
 
     while True:
@@ -22,7 +22,7 @@ async def client_init(client_socket, client_address):
             "next_position": (0, 0),
         }
         try:
-            await client_socket.sendall(json.dumps(payload_sent).encode("ascii"))
+            client_socket.sendall(json.dumps(payload_sent).encode("ascii"))
             print("\tdata sent")
         except:
             print("\tnothing sent, connection lost")
@@ -32,7 +32,7 @@ async def client_init(client_socket, client_address):
 
 def main():
     clientCount = 0
-    
+
     print(f"start server on: {HOST} {PORT}")
     s = socket.create_server((HOST, PORT))
     s.listen()
