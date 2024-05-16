@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from time import sleep
 
-HOST = "145.137.54.45"
+HOST = "145.24.223.115"
 PORT = 8000
 
 s = socket.socket()
