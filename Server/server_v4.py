@@ -31,7 +31,7 @@ async def client_init(client_socket, client_address):
         sleep(0.1)
 
 def main():
-    print("start server")
+    print(f"start server on: {HOST} {PORT}")
     s = socket.create_server((HOST, PORT))
     s.listen()
 
