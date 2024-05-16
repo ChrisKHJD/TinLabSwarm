@@ -56,7 +56,7 @@ def client_init(client_socket, client_address):
         client_socket.sendall(data["time"])    
     
 
-def main():
+async def main():
     print("start server")
     s = socket.create_server((HOST, PORT))
     s.listen()
@@ -65,6 +65,8 @@ def main():
         client_socket, client_address = s.accept()
         clientCount += 1
         print("connection accepted from ", client_address)
+
+        json.loads(await client_socket.recv(1048))
 
         t = threading.Thread(
             target=client_init,
