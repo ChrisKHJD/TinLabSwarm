@@ -8,30 +8,63 @@ HOST = "145.24.223.115"
 PORT = 8000
 
 connectedClients = {} #id, ip, port
-robots = {} #id, location, direction, last message time
+webots = {}
+chariots = {} #id, connection, location, direction, last message time
 
-def client_init(client_socket, client_address):
-    global robots
+def chariot_instructions():
+    global chariots
 
     while True:
-        print("trying to send")
+        for chariot in chariots:
+            print(chariots[chariot])
 
-        payload_sent = {
-            "id": 1,
-            "time": datetime.now().strftime("%H:%M:%S"),
-            "next_position": (0, 0),
-        }
+            client_socket = chariots[chariot][client_socket]
+
+            #add camera and pathplanning code here
+
+            payload_send = {
+                "instruction": "hello"
+            }
+
+            try:
+                client_socket.sendall(json.dumps(payload_send).encode("ascii"))
+                print("\tdata sent")
+            except:
+                print("\tnothing sent, connection lost")
+                break
+
+        sleep(0.1)
+
+
+
+def receiving(client_socket, client_address, client_id):
+    global webots, chariots
+
+    while True:
+        print(f"{client_id}, trying to receive")
+
         try:
-            client_socket.sendall(json.dumps(payload_sent).encode("ascii"))
-            print("\tdata sent")
+            payload_received = json.loads(client_socket.recv(1024).decode())
+
+            if payload_received["type"] == "webot":
+                webots[client_id] = payload_received
+            elif payload_received["type"] == "chariot":
+                chariots[client_id] = payload_received
         except:
-            print("\tnothing sent, connection lost")
-            break
+            print(f"{client_id}, no data received")
 
         sleep(0.1)
 
 def main():
+    global connectedClients
+
     clientCount = 0
+
+    t = threading.Thread(
+        target=chariot_instructions,
+        args=(),
+    )
+    t.start()
 
     print(f"start server on: {HOST} {PORT}")
     s = socket.create_server((HOST, PORT))
@@ -42,11 +75,17 @@ def main():
         clientCount += 1
         print("connection accepted from ", client_address)
 
+        connectedClients[clientCount] = {
+            "client_socket": client_socket,
+            "client_address": client_address
+        }
+
         t = threading.Thread(
-            target=client_init,
+            target=receiving,
             args=(
                 client_socket,
                 client_address,
+                clientCount
             ),
         )
         t.start()
