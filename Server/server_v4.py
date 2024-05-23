@@ -4,10 +4,10 @@ import json
 from datetime import datetime
 from time import sleep
 
-# HOST = "145.24.223.115"
-# PORT = 8000
-HOST = "145.137.54.196"
+HOST = "145.24.223.115"
 PORT = 8000
+# HOST = "145.137.54.196"
+# PORT = 8000
 
 connectedClients = {} #id, client_socket, client_address
 webots = {} #id, location, last message time
