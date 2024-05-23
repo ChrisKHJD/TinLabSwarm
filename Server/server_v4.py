@@ -51,7 +51,7 @@ def receiving(client_socket, client_address, client_id):
             # elif payload_received["type"] == "chariot":
             #     chariots[client_id] = payload_received
 
-            webots[client_id] = payload_received
+            webots = payload_received
 
             print(webots)
         except:
