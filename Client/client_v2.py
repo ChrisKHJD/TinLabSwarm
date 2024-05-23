@@ -3,7 +3,9 @@ import json
 from datetime import datetime
 from time import sleep
 
-HOST = "145.24.223.115"
+# HOST = "145.24.223.115"
+# PORT = 8000
+HOST = "145.137.54.196"
 PORT = 8000
 
 s = socket.socket()
@@ -12,25 +14,27 @@ def send():
     print("method: send")
     try:
         payload = {
-            1: {
-                "current_position": (0, 0)
-            },
-            2: {
-                "current_position": (0, 0)
-            },
-            3: {
-                "current_position": (0, 0)
-            },
-            4: {
-                "current_position": (0, 0)
-            },
-            "time_sent": datetime.now().strftime("%H:%cM:%S")
-
+            "webots": {
+                1: {
+                    "current_position": (0, 0)
+                },
+                2: {
+                    "current_position": (0, 0)
+                },
+                3: {
+                    "current_position": (0, 0)
+                },
+                4: {
+                    "current_position": (0, 0)
+                },
+                "time_sent": datetime.now().strftime("%H:%cM:%S")
+            }
         }
         s.sendall(json.dumps(payload).encode("ascii"))
         print(f"sent payload, {payload}")
     except:
         print("nothing sent")
+        init()
 
 
 def receive():

@@ -4,7 +4,9 @@ import json
 from datetime import datetime
 from time import sleep
 
-HOST = "145.24.223.115"
+# HOST = "145.24.223.115"
+# PORT = 8000
+HOST = "145.137.54.196"
 PORT = 8000
 
 connectedClients = {} #id, client_socket, client_address
@@ -23,7 +25,9 @@ def chariot_instructions():
             #add camera and pathplanning code here
 
             payload_send = {
-                "instruction": "hello"
+                "instruction": "turn_left"
+                # "instruction": "turn_right"
+                # "instruction": "move"
             }
 
             try:
@@ -45,7 +49,7 @@ def receiving(client_socket, client_address, client_id):
 
         try:
             # webots = json.loads(client_socket.recv(1024).decode())
-            print(json.loads(client_socket.recv(1024).decode()))
+            print(json.loads(client_socket.recv(1024).decode())["webots"])
 
             # if payload_received["type"] == "webot":
             #     webots[client_id] = payload_received
