@@ -44,7 +44,8 @@ def receiving(client_socket, client_address, client_id):
         print(f"{client_id}, trying to receive")
 
         try:
-            webots = json.loads(client_socket.recv(1024).decode())
+            # webots = json.loads(client_socket.recv(1024).decode())
+            print(json.loads(client_socket.recv(1024).decode()))
 
             # if payload_received["type"] == "webot":
             #     webots[client_id] = payload_received
