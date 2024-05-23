@@ -44,14 +44,14 @@ def receiving(client_socket, client_address, client_id):
         print(f"{client_id}, trying to receive")
 
         try:
-            payload_received = json.loads(client_socket.recv(1024).decode())
+            webots = json.loads(client_socket.recv(1024).decode())
 
             # if payload_received["type"] == "webot":
             #     webots[client_id] = payload_received
             # elif payload_received["type"] == "chariot":
             #     chariots[client_id] = payload_received
 
-            webots = payload_received
+            # webots = payload_received
 
             print(webots)
         except:

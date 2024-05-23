@@ -28,7 +28,7 @@ def send():
 
         }
         s.sendall(json.dumps(payload).encode("ascii"))
-        print("sent")
+        print(f"sent payload, {payload}")
     except:
         print("nothing sent")
 
