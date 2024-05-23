@@ -39,7 +39,10 @@ def chariot_instructions():
 
         sleep(0.1)
 
-
+def camera():
+    while True:
+        print("hello")
+        sleep(50)
 
 def receiving(client_socket, client_address, client_id):
     global webots, chariots
@@ -49,7 +52,8 @@ def receiving(client_socket, client_address, client_id):
 
         try:
             # webots = json.loads(client_socket.recv(1024).decode())
-            print(json.loads(client_socket.recv(1024).decode()))
+            # print(json.loads(client_socket.recv(1024).decode()))
+            print(client_socket.recv(1024).decode())
 
             # if payload_received["type"] == "webot":
             #     webots[client_id] = payload_received
@@ -71,6 +75,12 @@ def main():
 
     t = threading.Thread(
         target=chariot_instructions,
+        args=(),
+    )
+    t.start()
+
+    t = threading.Thread(
+        target=camera,
         args=(),
     )
     t.start()
