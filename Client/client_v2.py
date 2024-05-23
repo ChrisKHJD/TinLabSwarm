@@ -12,14 +12,25 @@ def send():
     print("method: send")
     try:
         payload = {
-            "id": 1,
-            "time": datetime.now().strftime("%H:%cM:%S"),
-            "current_position": (0, 0)
+            1: {
+                "current_position": (0, 0)
+            },
+            2: {
+                "current_position": (0, 0)
+            },
+            3: {
+                "current_position": (0, 0)
+            },
+            4: {
+                "current_position": (0, 0)
+            },
+            "time_sent": datetime.now().strftime("%H:%cM:%S")
+
         }
         s.sendall(json.dumps(payload).encode("ascii"))
-        print("\tsent")
+        print("sent")
     except:
-        print("\tnothing sent")
+        print("nothing sent")
 
 
 def receive():
@@ -46,7 +57,8 @@ def init():
 def main():
     while True:
         send()
-        receive()
+        # receive()
+        sleep(0.5)
 
 init()
 main()

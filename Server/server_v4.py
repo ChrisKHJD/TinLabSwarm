@@ -7,9 +7,9 @@ from time import sleep
 HOST = "145.24.223.115"
 PORT = 8000
 
-connectedClients = {} #id, ip, port
-webots = {}
-chariots = {} #id, connection, location, direction, last message time
+connectedClients = {} #id, client_socket, client_address
+webots = {} #id, location, last message time
+chariots = {} #id, location, direction, last message time
 
 def chariot_instructions():
     global chariots
@@ -18,7 +18,7 @@ def chariot_instructions():
         for chariot in chariots:
             print(chariots[chariot])
 
-            client_socket = chariots[chariot][client_socket]
+            client_socket = connectedClients[chariot]["client_socket"]
 
             #add camera and pathplanning code here
 
@@ -46,10 +46,14 @@ def receiving(client_socket, client_address, client_id):
         try:
             payload_received = json.loads(client_socket.recv(1024).decode())
 
-            if payload_received["type"] == "webot":
-                webots[client_id] = payload_received
-            elif payload_received["type"] == "chariot":
-                chariots[client_id] = payload_received
+            # if payload_received["type"] == "webot":
+            #     webots[client_id] = payload_received
+            # elif payload_received["type"] == "chariot":
+            #     chariots[client_id] = payload_received
+
+            webots[client_id] = payload_received
+
+            print(webots)
         except:
             print(f"{client_id}, no data received")
 
