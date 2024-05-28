@@ -117,8 +117,9 @@ def receiving(client_socket, client_address, client_id):
         print(f"{client_id}, trying to receive")
 
         try:
-            payload_received =  json.loads(client_socket.recv(1024).decode())
+            payload_received =  client_socket.recv(1024).decode()
             print(payload_received)
+            payload_json = json.loads(payload_received)
 
             if payload_received["type"] == "chariot":
                 chariots[client_id] = payload_received
