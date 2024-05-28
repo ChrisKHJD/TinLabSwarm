@@ -67,7 +67,7 @@ def get_instruction(robot_id, target_x, target_y, real_x, real_y, orientation, t
 
 
 def chariot_instructions():
-    global chariots, clientCount
+    global chariots, connectedClients, clientCount
 
     while True:
         for chariot in chariots:
@@ -96,6 +96,8 @@ def chariot_instructions():
             except:
                 print("\tnothing sent, connection lost")
                 chariots.pop(chariot)
+                connectedClients.pop(chariot)
+
                 clientCount -= 1
                 print(clientCount, " clients connected")
                 break
@@ -160,7 +162,7 @@ def main():
         id = randint(0,100)
 
         while id in connectedClients:
-            id = random.random(1, 100)
+            id = randint(1, 100)
 
         connectedClients[id] = {
             "client_socket": client_socket,
