@@ -81,8 +81,8 @@ def chariot_instructions():
             payload_send = {
                 # "instruction": "turn_left"  #instr
                 # "instruction": "turn_right"
-                # "instruction": "move"
-                "instruction": "back_led_on"
+                "instruction": "move"
+                # "instruction": "back_led_on"
             }
 
             try:
