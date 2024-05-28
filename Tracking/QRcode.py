@@ -4,7 +4,7 @@ import numpy as np
 import imutils
 
 # Replace the below URL with your own. Make sure to add "/shot.jpg" at last. 
-url = "http://145.24.238.61:8080/shot.jpg"
+url = "http://145.24.238.116:8080/shot.jpg"
 
 def QRcodePR(points):
     #middelpunt van de qrcode
@@ -24,7 +24,7 @@ while True:
     img_resp = requests.get(url) 
     img_arr = np.array(bytearray(img_resp.content), dtype=np.uint8) 
     img = cv2.imdecode(img_arr, -1)
-    img = imutils.resize(img, width=1000, height=1800)
+    #img = imutils.resize(img, width=3840, height=2160)
     qcd = cv2.QRCodeDetector()
     retval, decoded_info, points, straight_qrcode = qcd.detectAndDecodeMulti(img)
     
@@ -48,7 +48,6 @@ while True:
         #         print(QRcodePR(points[1]))
         #     case _:
         #         print("huh")
-
     # Press Esc key to exit 
     if cv2.waitKey(1) == 27: 
         break
