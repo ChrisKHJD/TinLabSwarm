@@ -82,10 +82,11 @@ def chariot_instructions():
             # print(time.time(), 'instruction send:', chariot, instr)
 
             payload_send = {
-
-                "instruction": "turn_left"  #instr
+                # "instruction": "turn_left"  #instr
                 # "instruction": "turn_right"
-                # "instruction": "move"
+                "instruction": "move"
+                # "instruction": "stop"
+                # "instruction": "back_led_on"
             }
 
             try:
