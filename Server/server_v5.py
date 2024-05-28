@@ -117,18 +117,16 @@ def receiving(client_socket, client_address, client_id):
         print(f"{client_id}, trying to receive")
 
         try:
-            payload_received =  client_socket.recv(1024).decode()
-            print(payload_received)
-            payload_json = json.loads(payload_received)
-
-            print(type(client_id))
+            payload_json =  json.loads(client_socket.recv(1024).decode())
+            # print(payload_received)
+            # payload_json = json.loads(payload_received)
 
             if payload_json["type"] == "chariot":
-                chariots[client_id] = payload_received
+                chariots[client_id] = payload_json
                 print("success")
                 return
             
-            webots = payload_received
+            webots = payload_json
         except BaseException as e:
             print(f"{client_id}, something went wrong, {e}")
             return
