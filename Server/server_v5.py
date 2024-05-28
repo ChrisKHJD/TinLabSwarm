@@ -7,10 +7,10 @@ from datetime import datetime
 from time import sleep
 from random import randint
 
-# HOST = "145.24.223.115"
-# PORT = 8000
-HOST = "145.137.54.129"
+HOST = "145.24.223.115"
 PORT = 8000
+# HOST = "145.137.54.129"
+# PORT = 8000
 
 clientCount = 0
 
