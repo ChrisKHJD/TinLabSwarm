@@ -82,6 +82,7 @@ def chariot_instructions():
                 # "instruction": "turn_left"  #instr
                 # "instruction": "turn_right"
                 "instruction": "move"
+                # "instruction": "stop"
                 # "instruction": "back_led_on"
             }
 

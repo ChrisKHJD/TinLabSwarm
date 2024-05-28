@@ -5,12 +5,14 @@ import math
 import time
 from datetime import datetime
 from time import sleep
-import asyncio
+from random import randint
 
-HOST = "145.24.223.115"
-PORT = 8000
-# HOST = "145.137.54.196"
+# HOST = "145.24.223.115"
 # PORT = 8000
+HOST = "145.137.54.129"
+PORT = 8000
+
+clientCount = 0
 
 connectedClients = {}  #id, client_socket, client_address
 webots = {}  #id, location, last message time
@@ -65,7 +67,7 @@ def get_instruction(robot_id, target_x, target_y, real_x, real_y, orientation, t
 
 
 def chariot_instructions():
-    global chariots
+    global chariots, clientCount
 
     while True:
         for chariot in chariots:
@@ -80,6 +82,7 @@ def chariot_instructions():
             # print(time.time(), 'instruction send:', chariot, instr)
 
             payload_send = {
+
                 "instruction": "turn_left"  #instr
                 # "instruction": "turn_right"
                 # "instruction": "move"
@@ -91,6 +94,9 @@ def chariot_instructions():
                 print("\tdata sent")
             except:
                 print("\tnothing sent, connection lost")
+                chariots.pop(chariot)
+                clientCount -= 1
+                print(clientCount, " clients connected")
                 break
 
         sleep(5)
@@ -101,21 +107,14 @@ def camera():
         print("hello")
         sleep(50)
 
-def thread_main():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    loop.run_until_complete(receiving())
-    loop.close()
-
-async def receiving(client_socket, client_address, client_id):
+def receiving(client_socket, client_address, client_id):
     global webots, chariots
 
     while True:
         print(f"{client_id}, trying to receive")
 
         try:
-            payload_received =  await asyncio.wait_for(json.loads(client_socket.recv(1024).decode()), 5)
+            payload_received =  json.loads(client_socket.recv(1024).decode())
             print(payload_received)
 
             if payload_received["type"] == "chariot":
@@ -133,9 +132,7 @@ async def receiving(client_socket, client_address, client_id):
 
 
 def main():
-    global connectedClients
-
-    clientCount = 0
+    global connectedClients, clientCount
 
     t = threading.Thread(
         target=chariot_instructions,
@@ -158,7 +155,13 @@ def main():
         clientCount += 1
         print("connection accepted from ", client_address)
 
-        connectedClients[clientCount] = {
+
+        id = randint(0,100)
+
+        while id in connectedClients:
+            id = random.random(1, 100)
+
+        connectedClients[id] = {
             "client_socket": client_socket,
             "client_address": client_address
         }
@@ -168,7 +171,7 @@ def main():
             args=(
                 client_socket,
                 client_address,
-                clientCount
+                id
             ),
         )
         t.start()
