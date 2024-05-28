@@ -120,7 +120,8 @@ def receiving(client_socket, client_address, client_id):
             payload_received =  client_socket.recv(1024).decode()
             print(payload_received)
             payload_json = json.loads(payload_received)
-            print(payload_json)
+
+            print(type(client_id))
 
             if payload_received["type"] == "chariot":
                 chariots[client_id] = payload_received
