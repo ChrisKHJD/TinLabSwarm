@@ -28,8 +28,8 @@ def receive():
         incoming = s.recv(1024).decode()
         print("\t", incoming)
         return True
-    except:
-        print("\tno incoming")
+    except Exception as e:
+        print(f"\tno incoming {e}")
         return False
 
 

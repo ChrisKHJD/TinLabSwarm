@@ -101,6 +101,12 @@ def camera():
         print("hello")
         sleep(50)
 
+def thread_main():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    loop.run_until_complete(receiving())
+    loop.close()
 
 async def receiving(client_socket, client_address, client_id):
     global webots, chariots
