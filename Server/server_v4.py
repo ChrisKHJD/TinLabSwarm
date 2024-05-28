@@ -73,10 +73,10 @@ def chariot_instructions():
             client_socket = connectedClients[chariot]["client_socket"]
 
             # add camera and pathplanning code here
-            real_x, real_y, orientation = chariots[chariot]
-            target_x, target_y = webots[chariot]
-            instr = get_instruction(chariot, target_x, target_y, real_x, real_y, orientation)
-            print(time.time(), 'instruction send:', chariot, instr)
+            # real_x, real_y, orientation = chariots[chariot]
+            # target_x, target_y = webots[chariot]
+            # instr = get_instruction(chariot, target_x, target_y, real_x, real_y, orientation)
+            # print(time.time(), 'instruction send:', chariot, instr)
 
             payload_send = {
                 "instruction": "turn_left"  #instr
