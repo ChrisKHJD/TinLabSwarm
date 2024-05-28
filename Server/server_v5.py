@@ -123,7 +123,7 @@ def receiving(client_socket, client_address, client_id):
 
             print(type(client_id))
 
-            if payload_received["type"] == "chariot":
+            if payload_json["type"] == "chariot":
                 chariots[client_id] = payload_received
                 print("success")
                 return
