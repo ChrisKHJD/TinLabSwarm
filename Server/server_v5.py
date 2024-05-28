@@ -126,7 +126,8 @@ def receiving(client_socket, client_address, client_id):
                 return
             
             webots = payload_received
-        except BaseException:
+        except BaseException as e:
+            print(f"{client_id}, something went wrong, {e}")
             return
         except:
             print(f"{client_id}, no data received")
