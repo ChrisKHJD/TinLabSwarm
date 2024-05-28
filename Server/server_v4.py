@@ -5,6 +5,7 @@ import math
 import time
 from datetime import datetime
 from time import sleep
+import asyncio
 
 HOST = "145.24.223.115"
 PORT = 8000
@@ -101,14 +102,14 @@ def camera():
         sleep(50)
 
 
-def receiving(client_socket, client_address, client_id):
+async def receiving(client_socket, client_address, client_id):
     global webots, chariots
 
     while True:
         print(f"{client_id}, trying to receive")
 
         try:
-            payload_received = json.loads(client_socket.recv(1024).decode())
+            payload_received =  await asyncio.wait_for(json.loads(client_socket.recv(1024).decode()), 5)
             print(payload_received)
 
             if payload_received["type"] == "chariot":
@@ -117,6 +118,8 @@ def receiving(client_socket, client_address, client_id):
                 return
             
             webots = payload_received
+        except BaseException:
+            return
         except:
             print(f"{client_id}, no data received")
 
