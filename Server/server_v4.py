@@ -131,7 +131,7 @@ def main():
         target=chariot_instructions,
         args=(),
     )
-    t.start()
+    # t.start()
 
     t = threading.Thread(
         target=camera,
