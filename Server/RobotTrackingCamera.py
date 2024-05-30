@@ -35,9 +35,13 @@ def calculate_angle(x1, y1, x2, y2):
 
 def fetch_frame():
     try:
+        print("1")
         img_resp = requests.get(CAMERA_URL)
+        print("2")
         img_arr = np.array(bytearray(img_resp.content), dtype=np.uint8)
+        print("3")
         frame = cv2.imdecode(img_arr, -1)
+        print("4")
         return imutils.resize(frame, width=FRAME_WIDTH, height=FRAME_HEIGHT)
     except Exception as e:
         print("Error fetching frame:", e)
@@ -157,7 +161,6 @@ def process_inference_noview(data):
 
 
 def getchariots():
-    print("1")
     frame = fetch_frame()
     print("get chariots")
 
