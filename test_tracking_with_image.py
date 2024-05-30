@@ -1,34 +1,14 @@
 import json
 import cv2
-import math
 import imutils
-import time
-import numpy as np
 from inference import get_model
 
 MODELID = "swarmkeypoint/1"
 APIKEY = "CnyYmNzp3FktcouTB3d5"
 IMAGE_PATH = "testimage.jpg"
-FRAME_WIDTH = 1920 #640
-FRAME_HEIGHT = 1080 #480
+FRAME_WIDTH = 1920  #640
+FRAME_HEIGHT = 1080  #480
 model = get_model(model_id=MODELID, api_key=APIKEY)
-
-
-def calculate_angle(x1, y1, x2, y2):
-    # Calculate the differences in coordinates
-    delta_x = x1 - x2
-    delta_y = y1 - y2
-
-    # Calculate the angle using arctan2 and convert it to degrees
-    angle_rad = math.atan2(delta_y, delta_x)
-    angle_deg = math.degrees(angle_rad)
-
-    # Ensure the angle is between 0 and 360 degrees
-    mapped_angle = angle_deg % 360
-    if mapped_angle < 0:
-        mapped_angle += 360  # Ensure angle is positive
-
-    return mapped_angle
 
 
 def fetch_frame():
@@ -42,15 +22,7 @@ def fetch_frame():
     except Exception as e:
         print("Error fetching frame:", e)
         return None
-# def fetch_frame():
-#     try:
-#         img = cv2.imread(IMAGE_PATH)
-#         img_arr = np.array(bytearray(img.content), dtype=np.uint8)
-#         frame = cv2.imdecode(img_arr, -1)
-#         return imutils.resize(frame, width=FRAME_WIDTH, height=FRAME_HEIGHT)
-#     except Exception as e:
-#         print("Error fetching frame:", e)
-#         return None
+
 
 def infer_frame(frame):
     try:
@@ -67,12 +39,9 @@ def process_inference(frame, data):
     if frame is None or data is None:
         print("no frame or no data")
         return None
-    bottom_x, bottom_y = None, None
-    top_x, top_y = None, None
 
     # er is altijd maar 1 element
     for element in data:
-        count = 0
         # voor elke robot
         for prediction in element['predictions']:
             x = int(prediction['x'])
@@ -93,16 +62,11 @@ def process_inference(frame, data):
                 class_name = keypoint['class_name']
                 if class_name == 'top':
                     color = (0, 0, 255)
-                    top_x, top_y = keypoint_x, keypoint_y
                 elif class_name == 'bottom':
                     color = (255, 0, 0)
-                    bottom_x, bottom_y = keypoint_x, keypoint_y
                 else:
                     color = (0, 255, 0)
                 cv2.circle(frame, (keypoint_x, keypoint_y), 5, color, -1)
-
-            # Calculate the angle between top and bottom keypoints
-            angle = calculate_angle(bottom_x, bottom_y, top_x, top_y)
 
     return frame
 

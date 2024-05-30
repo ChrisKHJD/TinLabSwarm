@@ -117,18 +117,56 @@ def process_inference(frame, data):
     return frame
 
 
+# not used
+def process_inference_noview(data):
+    if data is None:
+        print("no data")
+        return None
+
+    # Since there is always only one element in data
+    for element in data:
+        for prediction in element['predictions']:
+            x = int(prediction['x'])
+            y = int(prediction['y'])
+
+            top_x, top_y, bottom_x, bottom_y = None, None, None, None
+
+            for keypoint in prediction['keypoints']:
+                keypoint_x = int(keypoint['x'])
+                keypoint_y = int(keypoint['y'])
+                class_name = keypoint['class_name']
+
+                if class_name == 'top':
+                    top_x, top_y = keypoint_x, keypoint_y
+                elif class_name == 'bottom':
+                    bottom_x, bottom_y = keypoint_x, keypoint_y
+
+            if top_x is not None and top_y is not None and bottom_x is not None and bottom_y is not None:
+                # Calculate the angle between top and bottom keypoints
+                angle = calculate_angle(bottom_x, bottom_y, top_x, top_y)
+
+                # Update chariots with the calculated angle
+                update_chariots(x, y, angle)
+
+
 def main():
     while True:
         frame = fetch_frame()
         data = infer_frame(frame)
+
+        # for with view
         processed_frame = process_inference(frame, data)
+
+        # for without view
+        # processed_frame = None
+        # process_inference_noview(data)
 
         print(chariots)
         if processed_frame is not None:
             cv2.imshow('Camera', processed_frame)
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
     cv2.destroyAllWindows()
 
