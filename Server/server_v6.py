@@ -11,7 +11,7 @@ from RobotTrackingCamera import getchariots
 
 HOST = "145.24.223.115"
 PORT = 8000
-# HOST = "145.137.54.129"
+# HOST = "145.137.55.240"
 # PORT = 8000
 
 clientCount = 0
@@ -61,48 +61,50 @@ def get_instruction(robot_id, target_x, target_y, real_x, real_y, orientation, t
     elif abs(angle_diff) < 5:  # Within 5 degrees, move forward (maybe lower this value)
         instruction = 'move_forward'
     elif angle_diff > 0:
-        instruction = 'rotate_right'
+        instruction = 'turn_right'
     else:
-        instruction = 'rotate_left'
+        instruction = 'turn_left'
 
     return instruction
 
 
 def chariot_instructions():
-    global chariots, connectedClients, clientCount
+    global chariots, webots, connectedClients, clientCount
 
     while True:
-        for chariot in chariots:
-            print(chariot, chariots[chariot])
+        if webots:
+            for chariot in chariots:
+                print(chariot, chariots[chariot])
 
-            client_socket = connectedClients[chariot]["client_socket"]
+                client_socket = connectedClients[chariot]["client_socket"]
 
-            # add camera and pathplanning code here
-            # real_x, real_y, orientation = chariots[chariot]
-            # target_x, target_y = webots[chariot]
-            # instr = get_instruction(chariot, target_x, target_y, real_x, real_y, orientation)
-            # print(time.time(), 'instruction send:', chariot, instr)
+                # add camera and pathplanning code here
+                real_x, real_y, orientation = chariots[chariot]["coordinate"]
+                target_x, target_y = webots[chariots[chariot]["camera_id"]]
+                instr = get_instruction(chariot, target_x, target_y, real_x, real_y, orientation)
+                print(time.time(), 'instruction send:', chariot, instr)
 
-            payload_send = {
-                # "instruction": "turn_left"  #instr
-                # "instruction": "turn_right"
-                "instruction": "move"
-                # "instruction": "stop"
-                # "instruction": "back_led_on"
-            }
+                payload_send = {
+                    "instruction": get_instruction(chariot, target_x, target_y, real_x, real_y, orientation)
+                    # "instruction": "turn_left"  #instr
+                    # "instruction": "turn_right"
+                    # "instruction": "move"
+                    # "instruction": "stop"
+                    # "instruction": "back_led_on"
+                }
 
-            try:
-                # stuur je alle instructies naar alle robots? de robot zelf weet niet welk id die heeft?
-                client_socket.sendall(json.dumps(payload_send).encode("ascii"))
-                print("\tdata sent")
-            except:
-                print("\tnothing sent, connection lost")
-                chariots.pop(chariot)
-                connectedClients.pop(chariot)
+                try:
+                    # stuur je alle instructies naar alle robots? de robot zelf weet niet welk id die heeft?
+                    client_socket.sendall(json.dumps(payload_send).encode("ascii"))
+                    print("\tdata sent")
+                except:
+                    print("\tnothing sent, connection lost")
+                    chariots.pop(chariot)
+                    connectedClients.pop(chariot)
 
-                clientCount -= 1
-                print(clientCount, " clients connected")
-                break
+                    clientCount -= 1
+                    print(clientCount, " clients connected")
+                    break
 
         sleep(5)
 
@@ -110,9 +112,18 @@ def chariot_instructions():
 def camera():
     global chariots
     while True:
-        chariots = getchariots()
-        print(chariots)
-        sleep(1)
+        chariot_coordinates = getchariots()
+
+        if chariots and chariots.len() <= chariot_coordinates.len():
+            i = 0
+
+            for chariot in chariots:
+                chariots[chariot]["coordinate"] = chariot_coordinates[i]
+                chariots[chariot]["camera_id"] = i
+                i += 1
+
+            print(chariots)
+        sleep(0.1)
 
 def receiving(client_socket, client_address, client_id):
     global webots, chariots
@@ -125,7 +136,7 @@ def receiving(client_socket, client_address, client_id):
 
             if payload_json["type"] == "chariot":
                 chariots[client_id] = payload_json
-                print("success")
+                print("succes")
                 return
             
             webots = payload_json
