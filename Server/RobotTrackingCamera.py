@@ -157,10 +157,12 @@ def process_inference_noview(data):
 
 
 def getchariots():
+    print("1")
     frame = fetch_frame()
+    print("get chariots")
+
     data = infer_frame(frame)
 
-    print("get chariots")
 
     # for with view
     processed_frame = process_inference(frame, data)
