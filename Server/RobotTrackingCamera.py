@@ -160,6 +160,8 @@ def getchariots():
     frame = fetch_frame()
     data = infer_frame(frame)
 
+    print("get chariots")
+
     # for with view
     processed_frame = process_inference(frame, data)
     # for without view
