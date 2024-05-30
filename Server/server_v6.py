@@ -7,6 +7,8 @@ from datetime import datetime
 from time import sleep
 from random import randint
 
+from RobotTrackingCamera import getchariots
+
 HOST = "145.24.223.115"
 PORT = 8000
 # HOST = "145.137.54.129"
@@ -106,9 +108,11 @@ def chariot_instructions():
 
 
 def camera():
+    global chariots
     while True:
-        print("hello")
-        sleep(50)
+        chariots = getchariots()
+        print(chariots)
+        sleep(1)
 
 def receiving(client_socket, client_address, client_id):
     global webots, chariots

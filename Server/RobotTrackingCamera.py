@@ -15,6 +15,7 @@ FRAME_HEIGHT = 480
 model = get_model(model_id=MODEL_ID, api_key=APIKEY)
 chariots = {}
 
+
 def calculate_angle(x1, y1, x2, y2):
     # Calculate the differences in coordinates
     delta_x = x1 - x2
@@ -46,7 +47,9 @@ def fetch_frame():
 def infer_frame(frame):
     try:
         response = model.infer(frame)
-        json_data = json.dumps([ob.__dict__ for ob in response], default=lambda x: x.__dict__)
+        json_data = json.dumps(
+            [ob.__dict__ for ob in response], default=lambda x: x.__dict__
+        )
         data = json.loads(json_data)
         return data
     except Exception as e:
@@ -61,7 +64,7 @@ def update_chariots(x, y, angle):
     else:
         # om ervoor te zorgen dat robot 1, robot 1 blijft
         nearest_robot_id = None
-        min_distance = float('inf')
+        min_distance = float("inf")
         for robot_id, (robot_x, robot_y, _) in chariots.items():
             distance = math.sqrt((x - robot_x) ** 2 + (y - robot_y) ** 2)
             if distance < min_distance:
@@ -81,11 +84,11 @@ def process_inference(frame, data):
     for element in data:
         count = 0
         # voor elke robot
-        for prediction in element['predictions']:
-            x = int(prediction['x'])
-            y = int(prediction['y'])
-            width = int(prediction['width'])
-            height = int(prediction['height'])
+        for prediction in element["predictions"]:
+            x = int(prediction["x"])
+            y = int(prediction["y"])
+            width = int(prediction["width"])
+            height = int(prediction["height"])
 
             x1 = int(x - (width / 2))
             y1 = int(y - (height / 2))
@@ -94,14 +97,14 @@ def process_inference(frame, data):
 
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-            for keypoint in prediction['keypoints']:
-                keypoint_x = int(keypoint['x'])
-                keypoint_y = int(keypoint['y'])
-                class_name = keypoint['class_name']
-                if class_name == 'top':
+            for keypoint in prediction["keypoints"]:
+                keypoint_x = int(keypoint["x"])
+                keypoint_y = int(keypoint["y"])
+                class_name = keypoint["class_name"]
+                if class_name == "top":
                     color = (0, 0, 255)
                     top_x, top_y = keypoint_x, keypoint_y
-                elif class_name == 'bottom':
+                elif class_name == "bottom":
                     color = (255, 0, 0)
                     bottom_x, bottom_y = keypoint_x, keypoint_y
                 else:
@@ -124,28 +127,46 @@ def process_inference_noview(data):
 
     # Since there is always only one element in data
     for element in data:
-        for prediction in element['predictions']:
-            x = int(prediction['x'])
-            y = int(prediction['y'])
+        for prediction in element["predictions"]:
+            x = int(prediction["x"])
+            y = int(prediction["y"])
 
             top_x, top_y, bottom_x, bottom_y = None, None, None, None
 
-            for keypoint in prediction['keypoints']:
-                keypoint_x = int(keypoint['x'])
-                keypoint_y = int(keypoint['y'])
-                class_name = keypoint['class_name']
+            for keypoint in prediction["keypoints"]:
+                keypoint_x = int(keypoint["x"])
+                keypoint_y = int(keypoint["y"])
+                class_name = keypoint["class_name"]
 
-                if class_name == 'top':
+                if class_name == "top":
                     top_x, top_y = keypoint_x, keypoint_y
-                elif class_name == 'bottom':
+                elif class_name == "bottom":
                     bottom_x, bottom_y = keypoint_x, keypoint_y
 
-            if top_x is not None and top_y is not None and bottom_x is not None and bottom_y is not None:
+            if (
+                top_x is not None
+                and top_y is not None
+                and bottom_x is not None
+                and bottom_y is not None
+            ):
                 # Calculate the angle between top and bottom keypoints
                 angle = calculate_angle(bottom_x, bottom_y, top_x, top_y)
 
                 # Update chariots with the calculated angle
                 update_chariots(x, y, angle)
+
+
+def getchariots():
+    frame = fetch_frame()
+    data = infer_frame(frame)
+
+    # for with view
+    processed_frame = process_inference(frame, data)
+    # for without view
+    # processed_frame = None
+    # process_inference_noview(data)
+
+    return chariots
 
 
 def main():
@@ -162,9 +183,9 @@ def main():
 
         print(chariots)
         if processed_frame is not None:
-            cv2.imshow('Camera', processed_frame)
+            cv2.imshow("Camera", processed_frame)
 
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
 
     cv2.destroyAllWindows()
