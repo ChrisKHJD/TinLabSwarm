@@ -111,8 +111,11 @@ def chariot_instructions():
 
 def camera():
     global chariots
+
     while True:
         chariot_coordinates = getchariots()
+
+        print(chariot_coordinates)
 
         if chariots and chariots.len() <= chariot_coordinates.len():
             i = 0
