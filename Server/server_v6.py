@@ -113,6 +113,8 @@ def camera():
     global chariots
 
     while True:
+        print("camera")
+        
         chariot_coordinates = getchariots()
 
         print(chariot_coordinates)
