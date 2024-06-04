@@ -36,11 +36,7 @@ chariots = {} #id, location, direction, last message time
 
 # Calculate the angle between two points.
 def calculate_angle(x1, y1, x2, y2):
-    calculated_angle = math.degrees(math.atan2(y2 - y1, x2 - x1))
-    if calculated_angle < 0:
-        return 360 + calculated_angle
-    else:
-        return calculated_angle
+    return math.degrees(math.atan2(y2 - y1, x2 - x1))
 
 
 # Calculate the smallest difference between two angles.
@@ -59,16 +55,15 @@ def get_instruction(robot_id, target_x, target_y, real_x, real_y, orientation, t
 
     target_angle = calculate_angle(real_x, real_y, target_x, target_y)
     angle_diff = angle_difference(target_angle, orientation)
-    print(f"target angle: {target_angle}, orentation: {orientation}")
 
     if distance(real_x, real_y, target_x, target_y) <= threshold:
         instruction = 'stop'
     elif abs(angle_diff) < 30:  # Within 5 degrees, move forward (maybe lower this value)
         instruction = 'move_forward'
     elif angle_diff > 0:
-        instruction = 'rotate_left'
-    else:
         instruction = 'rotate_right'
+    else:
+        instruction = 'rotate_left'
 
     return instruction
 
@@ -76,10 +71,11 @@ def get_instruction(robot_id, target_x, target_y, real_x, real_y, orientation, t
 def chariot_instructions():
     global chariots, webots, connectedClients, clientCount
 
-    while True:
-        if webots:
-            print(f"print all chariots: {chariots}")
+    run = True
 
+    while True:
+        while len(chariots) > 2 and run:
+            print(chariots)
             for chariot in chariots:
                 try:
                     client_socket = connectedClients[chariot]["client_socket"]
@@ -102,8 +98,8 @@ def chariot_instructions():
 
                     try:
                         # stuur je alle instructies naar alle robots? de robot zelf weet niet welk id die heeft?
-                        client_socket.sendall(json.dumps(payload_send).encode("ascii"))
-                        pffft = chariots[chariot]["camera_id"]
+                        # client_socket.sendall(json.dumps(payload_send).encode("ascii"))
+                        pffft = chariots[chariot]
                         print(f"{pffft}, instruction send: {payload_send}")
                     except:
                         print(f"nothing sent, connection lost with {chariot}")
@@ -115,7 +111,9 @@ def chariot_instructions():
                         break
                 except Exception as e:
                     print(f"chariot_instructions something went wrong {chariot} {e}")
-        sleep(0.5)
+                
+            run = False
+            sleep(0.5)
 
 
 def camera():
@@ -173,7 +171,7 @@ def main():
         target=camera,
         args=(),
     )
-    t.start()
+    # t.start()
 
     print(f"start server on: {HOST} {PORT}")
     s = socket.create_server((HOST, PORT))

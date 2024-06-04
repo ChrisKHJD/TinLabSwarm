@@ -5,12 +5,13 @@ import requests
 import numpy as np
 import imutils
 from inference import get_model
+from time import sleep
 
 CAMERA_URL = "http://145.24.238.211:8080//shot.jpg"
 MODEL_ID = "swarmkeypoint/1"
 APIKEY = "CnyYmNzp3FktcouTB3d5"
 FRAME_WIDTH = 640
-FRAME_HEIGHT = 480
+FRAME_HEIGHT = 340
 
 model = get_model(model_id=MODEL_ID, api_key=APIKEY)
 camera_chariots = {}
@@ -163,9 +164,13 @@ def process_inference_noview(data):
 
                 # Update chariots with the calculated angle
                 update_chariots(x, y, angle)
+    
+processed_frame = None
 
 
 def getchariots():
+    global processed_frame
+    
     frame = fetch_frame()
 
     data = infer_frame(frame)
@@ -176,8 +181,21 @@ def getchariots():
     # for without view
     # processed_frame = None
     # process_inference_noview(data)
-    print(f"camera detected chariots: {camera_chariots}")
+    # print(f"camera detected chariots: {camera_chariots}")
+
     return camera_chariots
+
+def camera_view():
+    global processed_frame
+
+    while True:
+        if processed_frame is not None:
+            print(processed_frame)
+            cv2.imshow("Camera", processed_frame)
+
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
+        sleep(1)
 
 
 def main():
