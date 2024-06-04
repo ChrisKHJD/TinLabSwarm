@@ -5,287 +5,295 @@ from machine import Pin, PWM
 import json
 from time import sleep
 
-
-
-
 # Constants
-BUILT_IN_LED = 25  # Built-in LED
-FLED = 20  # Front LED Red
-BLED = 21  # Back LED Green
-PWM_LM = 6  # Left Continuous Servo 
-PWM_RM = 7  # Right Continuous Servo
-PWM_SC = 10  # Panning Servo
-SDA = 4
-SCL = 5
-MISO = 16
-MOSI = 19
-SCK = 18
-CS = 17
+BUILT_IN_LED_PIN = 25
+FLED_PIN = 20
+BLED_PIN = 21
+PWM_LM_PIN = 6
+PWM_RM_PIN = 7
+PWM_SC_PIN = 10
+SDA_PIN = 4
+SCL_PIN = 5
+MISO_PIN = 16
+MOSI_PIN = 19 
+SCK_PIN = 18
+CS_PIN = 17
 
-# Insert your network parameters
 SSID = b'tesla iot' 
-PWD = b'fsL6HgjN' 
-
+PASSWORD = b'fsL6HgjN' 
 PORT = 8000
-IP_ADDRESS = "145.24.223.115"
-TIMEOUT_VALUE = 0.1  # Set timeout for non-blocking receive operations
+IP_ADDRESS = "145.137.55.132" # 145.24.223.115, temp: 145.137.55.132
+TIMEOUT_VALUE = 0.1
+
+# PWM Frequencies and Duty Cycles
+PWM_FREQUENCY = 50
+DUTY_CYCLE_STOP = 0
+DUTY_CYCLE_FORWARD_LEFT = 6000
+DUTY_CYCLE_FORWARD_RIGHT = 3050
+DUTY_CYCLE_BACKWARD_LEFT = 3000
+DUTY_CYCLE_BACKWARD_RIGHT = 7000
 
 class RobotController:
     def __init__(self):
         self.setup_pins()
         self.setup_servos()
         self.setup_network()
-        self.last_send_time = time.time()  # Set initial time
+        self.last_send_time = time.time()
         self.s = None  
+        self.instruction_handlers = {
+            "move": self.test_move,
+            "move_forward": self.move_forward,
+            "move_backward": self.move_backward,
+            "turn_left": self.turn_left,
+            "turn_right": self.turn_right,
+            "stop": self.emergency_stop,
+            "led_blink": self.blink_leds,
+            "led_on": self.turn_led_on,
+            "led_off": self.turn_led_off
+        }
+        self.html_page = """
+        <html>
+            <head>
+                <title>Robot Controller</title>
+            </head>
+            <body>
+                <h1>Robot Controller</h1>
+                <button onclick="sendRequest('/?PRESS=FRONT_LED_ON')">Front LED On</button>
+                <button onclick="sendRequest('/?PRESS_1=FRONT_LED_OFF')">Front LED Off</button>
+                <button onclick="sendRequest('/?PRESS_2=BACK_LED_ON')">Back LED On</button>
+                <button onclick="sendRequest('/?PRESS_3=BACK_LED_OFF')">Back LED Off</button>
+                <button onclick="sendRequest('/?PRESS_4=MOVE_FORWARD')">Move Forward</button>
+                <button onclick="sendRequest('/?PRESS_5=MOVE_BACKWARD')">Move Backward</button>
+                <button onclick="sendRequest('/?PRESS_6=TURN_LEFT')">Turn Left</button>
+                <button onclick="sendRequest('/?PRESS_7=TURN_RIGHT')">Turn Right</button>
+                <button onclick="sendRequest('/?PRESS_8=STOP')">Stop</button>
+                <button onclick="sendRequest('/?PRESS_9=TEST')">Test</button>
+                <script>
+                    function sendRequest(url) {
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("GET", url, true);
+                        xhr.send();
+                    }
+                </script>
+            </body>
+        </html>
+        """
 
     def setup_pins(self):
-        self.built_in_led = Pin(BUILT_IN_LED, Pin.OUT)
-        self.fled = Pin(FLED, Pin.OUT)
-        self.bled = Pin(BLED, Pin.OUT)
+        self.built_in_led = Pin(BUILT_IN_LED_PIN, Pin.OUT)
+        self.fled = Pin(FLED_PIN, Pin.OUT)
+        self.bled = Pin(BLED_PIN, Pin.OUT) 
 
     def setup_servos(self):
-        self.LeftMotor = PWM(Pin(PWM_LM))
-        self.LeftMotor.freq(50)
-        self.RightMotor = PWM(Pin(PWM_RM))
-        self.RightMotor.freq(50)
-        self.PanMotor = PWM(Pin(PWM_SC))
-        self.PanMotor.freq(50)
+        self.LeftMotor = PWM(Pin(PWM_LM_PIN))
+        self.LeftMotor.freq(PWM_FREQUENCY)
+        self.RightMotor = PWM(Pin(PWM_RM_PIN))
+        self.RightMotor.freq(PWM_FREQUENCY)
+        self.PanMotor = PWM(Pin(PWM_SC_PIN))
+        self.PanMotor.freq(PWM_FREQUENCY)
 
     def setup_network(self):
         network.hostname("mypicow")
         self.wlan = network.WLAN(network.STA_IF)
         self.wlan.active(True)
         
-    def blink_leds(self):
-        # Blink the front and back LEDs
-        for _ in range(5):  # Blink 5 times
-            self.fled.value(not self.fled.value())  # Toggle front LED
-            self.bled.value(not self.bled.value())  # Toggle back LED
-            time.sleep(0.5)  # 0.5 second delay between blinks
-            print("Blinking Led'")
-            
+    def blink_leds(self, times=5, interval=0.5):    
+        for _ in range(times):
+            self.fled.value(not self.fled.value())
+            self.bled.value(not self.bled.value())
+            time.sleep(interval)
+            print(f"Blinking LEDs on pins {self.fled} and {self.bled}")
+
+
+    def turn_led_on(self, pin=BUILT_IN_LED_PIN):
+        led = Pin(pin, Pin.OUT)
+        led.value(True)
+        print(f"LED on pin {pin} is now ON")
+
+    def turn_led_off(self, pin=BUILT_IN_LED_PIN):
+        led = Pin(pin, Pin.OUT)
+        led.value(False)
+        print(f"LED on pin {pin} is now OFF")
+
     def emergency_stop(self):
-        # Stop all movements and blink LEDs
-        self.LeftMotor.duty_u16(0)
-        self.RightMotor.duty_u16(0)
-        #self.PanMotor.duty_u16(0)
-        self.blink_leds()
-        print("Emergency Stop") 
-            
+        self.LeftMotor.duty_u16(DUTY_CYCLE_STOP)
+        self.RightMotor.duty_u16(DUTY_CYCLE_STOP)
+        self.blink_leds(BUILT_IN_LED_PIN)
+        print("Emergency Stop")
+
     def move_forward(self):
-        # Control the motors to move forward
-        self.LeftMotor.duty_u16(5000)
-        self.RightMotor.duty_u16(5000)
-        #time.sleep(5)
-        #self.LeftMotor.duty_u16(5000)
-        #self.RightMotor.duty_u16(5000)
+        self.LeftMotor.duty_u16(DUTY_CYCLE_FORWARD_LEFT)
+        self.RightMotor.duty_u16(DUTY_CYCLE_FORWARD_RIGHT)
         print("Moving Forward")
-        
+
     def move_backward(self):
-        # Control the motors to move backward (adjust values for your robot)
-        # This is a basic example, may require reversing motor direction based on hardware
-        self.LeftMotor.duty_u16(3000)
-        self.RightMotor.duty_u16(7000)
-        #time.sleep(1)
-        #self.LeftMotor.duty_u16(5000)
-        #self.RightMotor.duty_u16(5000)
-        print("Moving Back")
+        self.LeftMotor.duty_u16(DUTY_CYCLE_BACKWARD_LEFT)
+        self.RightMotor.duty_u16(DUTY_CYCLE_BACKWARD_RIGHT)
+        print("Moving Backward")
 
     def turn_left(self):
-        # Control the servos to turn left (adjust values for your robot)
-        self.LeftMotor.duty_u16(10)  # Lower duty cycle for left motor (example)
-        self.RightMotor.duty_u16(1000)  # Higher duty cycle for right motor (example)
-        #time.sleep(3)
-        #self.LeftMotor.duty_u16(5000)
-        #self.RightMotor.duty_u16(5000)
-        
+        self.LeftMotor.duty_u16(DUTY_CYCLE_STOP)
+        self.RightMotor.duty_u16(DUTY_CYCLE_FORWARD_RIGHT)
         print("Turning Left")
 
     def turn_right(self):
-        # Control the servos to turn right (adjust values for your robot)
-        self.LeftMotor.duty_u16(1000)  # Higher duty cycle for left motor (example)
-        self.RightMotor.duty_u16(10)  # Lower duty cycle for right motor (example)
-        time.sleep(1) 
-        #self.LeftMotor.duty_u16(500)
-        #self.RightMotor.duty_u16(0)
-        
-        #self.emergency_stop()
+        self.LeftMotor.duty_u16(DUTY_CYCLE_FORWARD_LEFT)
+        self.RightMotor.duty_u16(DUTY_CYCLE_STOP)
         print("Turning Right")
-    
+
     def test_move(self):
-        self.LeftMotor.duty_u16(3000)
-        self.RightMotor.duty_u16(7000)
+        self.move_forward()
         time.sleep(1)
         self.emergency_stop()
         time.sleep(1)
-        self.LeftMotor.duty_u16(0)
-        self.RightMotor.duty_u16(3000)
-        print("Turn Left")
-        time.sleep(1)
-        self.LeftMotor.duty_u16(3000)
-        self.RightMotor.duty_u16(0)
+        self.turn_left()
         time.sleep(1)
         self.emergency_stop()
-        
-        print("Test Funciton")
-    
-        
+        time.sleep(1)
+        self.turn_right()
+        time.sleep(1)
+        self.emergency_stop()
+        time.sleep(1)
+        self.move_forward()
+        time.sleep(3)
+        self.emergency_stop()
+        time.sleep(1)
+        self.move_backward()
+        time.sleep(3)
+        self.emergency_stop()
+        print("Test Move Completed")
+
     def send_data(self):
-        """Sends a JSON-formatted payload to the server."""
-        print("RobotController: Sending data...")
         try:
-            if not self.s:  # Ensure socket is created before sending
+            if not self.s:
                 self.create_socket()
 
             payload = {"type": "chariot"}
-            #payload = {"type": "chariot", "time_sent": datetime.now().strftime("%H:%cM:%S")}
             encoded_payload = json.dumps(payload).encode("ascii")
             self.s.sendall(encoded_payload)
-            print(f"RobotController: Sent payload: {payload}")
+            print(f"Sent payload: {payload}")
         except Exception as e:
-            print(f"RobotController: Error sending data: {e}")
-
+            print(f"Error sending data: {e}")
 
     def receive_data(self):
-        """Attempts to receive data from the server.
-
-        Returns True if data is received, False otherwise.
-        """
-        print("RobotController: Receiving data...")
         try:
-            if not self.s:  # Ensure socket is created before receiving
+            if not self.s:
                 self.create_socket()
 
-            received_data = self.s.recv(1024).decode()  # Set a reasonable buffer size
+            received_data = self.s.recv(1024).decode()
             if received_data:
-                print(f"RobotController: Received: {received_data}")
-                
-                # Parse the received data (assuming JSON format)
-                try:
-                    data = json.loads(received_data)
-                    instruction = data.get("instruction")
-                    if instruction == "move":
-                        # Call a function to handle the turn_left instruction
-                        self.test_move()
-                    # ... add logic for other instructions (turn_right, move_forward, etc.)
-                    else:
-                        print(f"RobotController: Unknown instruction: {instruction}")
-                    
-                except Exception as e:  
-                    print(f"RobotController: Error parsing data: {e}")
+                print(f"Received: {received_data}")
+                data = json.loads(received_data)
+                instruction = data.get("instruction")
+                if instruction in self.instruction_handlers:
+                    self.instruction_handlers[instruction]()
+                else:
+                    print(f"Unknown instruction: {instruction}")
                 return True
             else:
-                print("RobotController: No data received")
+                print("No data received")
                 return False
         except Exception as e:
-            print(f"RobotController: Error receiving data: {e}")
+            print(f"Error receiving data: {e}")
             return False
 
-
     def create_socket(self):
-        """Creates a socket connection to the server."""
-        print("RobotController: Creating socket...")
-        
         try:
             self.s = socket.socket()
             self.s.connect((IP_ADDRESS, PORT))
-            print("This...")
-            print("RobotController: Connected!")
-            self.s.settimeout(TIMEOUT_VALUE)  # Set non-blocking receive timeout
+            self.s.settimeout(TIMEOUT_VALUE)
+            print("Socket created and connected")
         except Exception as e:
-            print(f"RobotController: Connection failed: {e}")
-            self.s = None  # Reset socket on failure
-            
-        # Send a connection message
-        connection_message = {"type": "connection", "message": "Connected from RobotController"}
-        encoded_message = json.dumps(connection_message).encode("ascii")
-        self.s.sendall(encoded_message)
-        print(f"RobotController: Sent connection message: {connection_message}")
+            print(f"Connection failed: {e}")
+            self.s = None
 
     def connect_wifi(self):
-        time0 = time.time()
-        self.wlan.connect(SSID, PWD)
-        while True:
-            if self.wlan.isconnected():
-                print("\nConnected!\n")
-                self.built_in_led.value(True)
-                print("IP Address:", self.wlan.ifconfig()[0])  # Print IP address
-                break
-            else:
-                print(".")
-                time.sleep(1)
-                if time.time() - time0 > 10:
-                    print("Connection could not be established")
-                    break
+        start_time = time.time()
+        self.wlan.connect(SSID, PASSWORD)
+        while not self.wlan.isconnected():
+            print(".")
+            time.sleep(1)
+            if time.time() - start_time > 10:
+                print("Connection could not be established")
+                return
+        print("Connected to WiFi")
+        self.built_in_led.value(True)
+        print("IP Address:", self.wlan.ifconfig()[0])
 
     def serve_requests(self):
         addr = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
-        s = socket.socket()
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.bind(addr)
-        print("Listening to port 80\n")
-        s.listen(1)
+        server_socket = socket.socket()
+        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        server_socket.bind(addr)
+        print("Listening on port 80")
+        server_socket.listen(1)
 
         while True:
-            cl, addr = s.accept()
-            print("Incoming connection request from: " + str(addr) + "\n")
-            cl_file = cl.makefile('rwb', 0)
+            client, addr = server_socket.accept()
+            print(f"Incoming connection from {addr}")
+            client_file = client.makefile('rwb', 0)
             found = False
             while True:
-                line = cl_file.readline()
+                line = client_file.readline()
                 if not line or line == b'\r\n':
                     break
                 if not found:
-                    if str(line).find("/?PRESS=FRONT_LED_ON") != -1:
-                        self.fled.value(True)
+                    if b"/?PRESS=FRONT_LED_ON" in line:
+                        self.turn_led_on(FLED_PIN)
                         found = True
-                    if str(line).find("/?PRESS_1=FRONT_LED_OFF") != -1:
-                        self.fled.value(False)
+                    if b"/?PRESS_1=FRONT_LED_OFF" in line:
+                        self.turn_led_off(FLED_PIN)
                         found = True
-                    if str(line).find("/?PRESS_2=BACK_LED_ON") != -1:
-                        self.bled.value(True)
+                    if b"/?PRESS_2=BACK_LED_ON" in line:
+                        self.turn_led_on(BLED_PIN)
                         found = True
-                    if str(line).find("/?PRESS_3=BACK_LED_OFF") != -1:
-                        self.bled.value(False)
+                    if b"/?PRESS_3=BACK_LED_OFF" in line:
+                        self.turn_led_off(BLED_PIN)
                         found = True
-                    if str(line).find("/?PRESS_4=MOVE") != -1:
-                        self.move_forward(50, 1)
+                    if b"/?PRESS_4=MOVE" in line:
+                        self.move_forward()
+                        found = True
+                    if b"/?PRESS_5=MOVE_BACKWARD" in line:
+                        self.move_backward()
+                        found = True
+                    if b"/?PRESS_6=TURN_LEFT" in line:
+                        self.turn_left()
+                        found = True
+                    if b"/?PRESS_7=TURN_RIGHT" in line:
+                        self.turn_right()
+                        found = True
+                    if b"/?PRESS_8=STOP" in line:
+                        self.emergency_stop()
+                        found = True
+                    if b"/?PRESS_9=TEST" in line:
+                        self.test_move()
                         found = True
 
-            # We process the response file
-            try:
-                response = "HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n" + open("main.html", "r").read()
-            except:
-                response = "HTTP/1.0 404 Not Found\r\n\r\n"
-            cl.send(response)
-            cl.close()
-    
+            response = "HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n" + self.html_page
+            client.send(response)
+            client.close()
+
     def main_loop(self):
-        """Main program loop for network communication."""
         while True:
             try:
-                # Send data every second
                 if time.time() - self.last_send_time >= 1:
                     self.send_data()
                     self.last_send_time = time.time()
 
-                # Attempt to receive data non-blocking
                 if self.receive_data():
-                    # Handle received data as needed (e.g., process commands)
                     pass
 
             except Exception as e:
-                print(f"RobotController: Error: {e}")
+                print(f"Error: {e}")
 
-            sleep(0.5)  # Introduce a delay between attempts
+            sleep(0.5)
 
-
-# Main function
 def main():
     robot = RobotController()
     robot.connect_wifi()
-    #robot.serve_requests()
     robot.main_loop()
+    # robot.serve_requests() # Voor Het Testen
 
 if __name__ == "__main__":
     main()
+
