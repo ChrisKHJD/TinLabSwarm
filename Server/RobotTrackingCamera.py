@@ -14,6 +14,7 @@ FRAME_HEIGHT = 480
 
 model = get_model(model_id=MODEL_ID, api_key=APIKEY)
 camera_chariots = {}
+amount_robots_seen = 0
 
 
 def calculate_angle(x1, y1, x2, y2):
@@ -63,7 +64,7 @@ def infer_frame(frame):
 
 def update_chariots(x, y, angle):
     global camera_chariots
-    if len(camera_chariots) < 2:
+    if len(camera_chariots) < amount_robots_seen:
         camera_chariots[len(camera_chariots)] = (x, y, angle)
     else:
         # om ervoor te zorgen dat robot 1, robot 1 blijft
@@ -78,6 +79,7 @@ def update_chariots(x, y, angle):
 
 
 def process_inference(frame, data):
+    global amount_robots_seen
     if frame is None or data is None:
         print("no frame or no data")
         return None
@@ -87,6 +89,7 @@ def process_inference(frame, data):
     # er is altijd maar 1 element
     for element in data:
         count = 0
+        amount_robots_seen = len(element["predictions"])
         # voor elke robot
         for prediction in element["predictions"]:
             x = int(prediction["x"])
@@ -125,16 +128,18 @@ def process_inference(frame, data):
 
 # not used
 def process_inference_noview(data):
+    global amount_robots_seen
     if data is None:
         print("no data")
         return None
 
     # Since there is always only one element in data
     for element in data:
+        amount_robots_seen = 0
         for prediction in element["predictions"]:
             x = int(prediction["x"])
             y = int(prediction["y"])
-
+            amount_robots_seen+= 1
             top_x, top_y, bottom_x, bottom_y = None, None, None, None
 
             for keypoint in prediction["keypoints"]:
