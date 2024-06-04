@@ -9,16 +9,18 @@ from random import randint
 
 from RobotTrackingCamera import getchariots
 
-HOST = "145.24.223.115"
-PORT = 8000
-# HOST = "145.137.55.132"
+# HOST = "145.24.223.115"
 # PORT = 8000
+HOST = "145.137.55.132"
+PORT = 8000
 
 clientCount = 0
 
 connectedClients = {}  #id, client_socket, client_address
 webots = {}  #id, location, last message time
-chariots = {}  #id, location, direction, last message time
+chariots = {0: {
+    "coordinate": (10, 10, 30)
+}}  #id, location, direction, last message time
 
 #format used for instructions calculation
 # webots = {
@@ -74,15 +76,12 @@ def chariot_instructions():
     while True:
         if webots:
             for chariot in chariots:
-                print(chariot, chariots[chariot])
-
                 client_socket = connectedClients[chariot]["client_socket"]
 
                 # add camera and pathplanning code here
                 real_x, real_y, orientation = chariots[chariot]["coordinate"]
                 target_x, target_y = webots[chariots[chariot]["camera_id"]]
                 instr = get_instruction(chariot, target_x, target_y, real_x, real_y, orientation)
-                print(time.time(), 'instruction send:', chariot, instr)
 
                 payload_send = {
                     "instruction": get_instruction(chariot, target_x, target_y, real_x, real_y, orientation)
@@ -96,9 +95,9 @@ def chariot_instructions():
                 try:
                     # stuur je alle instructies naar alle robots? de robot zelf weet niet welk id die heeft?
                     client_socket.sendall(json.dumps(payload_send).encode("ascii"))
-                    print("\tdata sent")
+                    print(f"{time.time()}, instruction send: {payload_send}")
                 except:
-                    print("\tnothing sent, connection lost")
+                    print(f"nothing sent, connection lost with {chariot}")
                     chariots.pop(chariot)
                     connectedClients.pop(chariot)
 
@@ -112,22 +111,16 @@ def chariot_instructions():
 def camera():
     global chariots
 
-    while True:
-        print("camera")
-        
+    while True:        
         chariot_coordinates = getchariots()
 
-        print(chariot_coordinates)
-
-        if chariots and chariots.len() <= chariot_coordinates.len():
+        if chariots and len(chariots) <= len(chariot_coordinates):
             i = 0
 
             for chariot in chariots:
                 chariots[chariot]["coordinate"] = chariot_coordinates[i]
                 chariots[chariot]["camera_id"] = i
                 i += 1
-
-            print(chariots)
         sleep(0.1)
 
 def receiving(client_socket, client_address, client_id):
@@ -145,6 +138,7 @@ def receiving(client_socket, client_address, client_id):
                 return
             
             webots = payload_json
+            print(payload_json)
         except BaseException as e:
             print(f"{client_id}, something went wrong, {e}")
             return
@@ -157,12 +151,14 @@ def receiving(client_socket, client_address, client_id):
 def main():
     global connectedClients, clientCount
 
+    print("start chariot_instructions thread")
     t = threading.Thread(
         target=chariot_instructions,
         args=(),
     )
     t.start()
 
+    print("start camera thread")
     t = threading.Thread(
         target=camera,
         args=(),

@@ -6,14 +6,14 @@ import numpy as np
 import imutils
 from inference import get_model
 
-CAMERA_URL = "http://145.24.238.143:8080//shot.jpg"
+CAMERA_URL = "http://145.24.238.211:8080//shot.jpg"
 MODEL_ID = "swarmkeypoint/1"
 APIKEY = "CnyYmNzp3FktcouTB3d5"
 FRAME_WIDTH = 640
 FRAME_HEIGHT = 480
 
 model = get_model(model_id=MODEL_ID, api_key=APIKEY)
-chariots = {}
+camera_chariots = {}
 
 
 def calculate_angle(x1, y1, x2, y2):
@@ -35,13 +35,13 @@ def calculate_angle(x1, y1, x2, y2):
 
 def fetch_frame():
     try:
-        print("1")
+        # print("1")
         img_resp = requests.get(CAMERA_URL)
-        print("2")
+        # print("2")
         img_arr = np.array(bytearray(img_resp.content), dtype=np.uint8)
-        print("3")
+        # print("3")
         frame = cv2.imdecode(img_arr, -1)
-        print("4")
+        # print("4")
         return imutils.resize(frame, width=FRAME_WIDTH, height=FRAME_HEIGHT)
     except Exception as e:
         print("Error fetching frame:", e)
@@ -62,19 +62,19 @@ def infer_frame(frame):
 
 
 def update_chariots(x, y, angle):
-    global chariots
-    if len(chariots) < 2:
-        chariots[len(chariots)] = (x, y, angle)
+    global camera_chariots
+    if len(camera_chariots) < 2:
+        camera_chariots[len(camera_chariots)] = (x, y, angle)
     else:
         # om ervoor te zorgen dat robot 1, robot 1 blijft
         nearest_robot_id = None
         min_distance = float("inf")
-        for robot_id, (robot_x, robot_y, _) in chariots.items():
+        for robot_id, (robot_x, robot_y, _) in camera_chariots.items():
             distance = math.sqrt((x - robot_x) ** 2 + (y - robot_y) ** 2)
             if distance < min_distance:
                 min_distance = distance
                 nearest_robot_id = robot_id
-        chariots[nearest_robot_id] = (x, y, angle)
+        camera_chariots[nearest_robot_id] = (x, y, angle)
 
 
 def process_inference(frame, data):
@@ -162,7 +162,6 @@ def process_inference_noview(data):
 
 def getchariots():
     frame = fetch_frame()
-    print("get chariots")
 
     data = infer_frame(frame)
 
@@ -172,8 +171,8 @@ def getchariots():
     # for without view
     # processed_frame = None
     # process_inference_noview(data)
-
-    return chariots
+    print(f"camera detected chariots: {camera_chariots}")
+    return camera_chariots
 
 
 def main():
@@ -188,7 +187,7 @@ def main():
         # processed_frame = None
         # process_inference_noview(data)
 
-        print(chariots)
+        print(camera_chariots)
         if processed_frame is not None:
             cv2.imshow("Camera", processed_frame)
 
