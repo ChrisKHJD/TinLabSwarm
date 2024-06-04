@@ -11,7 +11,7 @@ from RobotTrackingCamera import getchariots
 
 HOST = "145.24.223.115"
 PORT = 8000
-# HOST = "145.137.55.240"
+# HOST = "145.137.55.132"
 # PORT = 8000
 
 clientCount = 0

@@ -6,7 +6,7 @@ import numpy as np
 import imutils
 from inference import get_model
 
-CAMERA_URL = "http://145.24.238.10:8080//shot.jpg"
+CAMERA_URL = "http://145.24.238.143:8080//shot.jpg"
 MODEL_ID = "swarmkeypoint/1"
 APIKEY = "CnyYmNzp3FktcouTB3d5"
 FRAME_WIDTH = 640
