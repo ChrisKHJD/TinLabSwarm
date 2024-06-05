@@ -25,21 +25,18 @@ def DistancesToOtherRobots(CurrentRobot,OtherRobots):
     return(distances)
     
 def DistancesToOtherObstacles(CurrentRobot):
-
     distances=[];
     for each in obstacles:
         distances.append(Distance(CurrentRobot.getField("translation"),each.getField("translation")))
     return(distances)
     
 def DistancesToOtherObjectives(CurrentRobot):
-
     distances=[];
     for each in objectives:
         distances.append(Distance(CurrentRobot.getField("translation"),each.getField("translation")))
     return(distances)
 
 def DistancesToDigits(CurrentRobot):
-
     distances=[];
     i=0
     for each in digitStripes:
@@ -120,14 +117,12 @@ def process_robot(robot):
     initPotential = getPotential(robot)
     translationField = robot.getField("translation")
     OldPos = translationField.getSFVec3f()
-    
-    #print(robot.getField('name').getSFString(), ' ', initPotential)
     NewPos = OldPos.copy()
     
     bestPotential = initPotential
     bestPos = NewPos.copy()
     
-    for _ in range(3): # Perform five random steps, more steps, better routes less stuck
+    for _ in range(3): # Perform x random steps, more steps, better routes less stuck, more computing power
         operation = get_random_operation()
         items_to_modify = get_random_items_to_modify()
         NewPos = modify_position(NewPos, items_to_modify)
@@ -143,34 +138,22 @@ def process_robot(robot):
     translationField.setSFVec3f(bestPos)
 
 def assignStripesToRobots():
-    # goalAssignments = [-1] * len(robots)
-
     # Initialize an empty array with a single row
     matrix = []  # Specify dtype=object to allow for lists or tuples
     for robot in robots:
         distances_to_digits = DistancesToDigits(robot)
-        # to make sure the robots wont get assigned to a target that is not needed
-        # for i in range(len(distances_to_digits)):
-            # if numbers[numberToShow][i] == 0:
-                # distances_to_digits[i]=99
         matrix.append(distances_to_digits)
     
-    # print(matrix)
-    
     cost = np.array(matrix)
-    # print(cost)
 
     # Use linear_sum_assignment to find the optimal assignment
     for i in range(len(goalAssignments)):
         goalAssignments[i] = -1
-    # goalAssignments = [-1] * len(robots)
-    # print('before assignments', goalAssignments)
+
     row_ind, col_ind = linear_sum_assignment(cost)
-    #print(row_ind, col_ind)
     for i in range(numbers[FirstNumberToShow].count(1) + numbers[SecondNumberToShow].count(1) + numbers[ThirdNumberToShow].count(1)+ numbers[FourthNumberToShow].count(1)): #  is the amount of objectives should be amount
-        print('robotindex',row_ind[i],'digitIndex',col_ind[i])
+        print('robotindex',row_ind[i],'is going to digitIndex',col_ind[i])
         goalAssignments[row_ind[i]] = col_ind[i]
-    
     
     # Calculate the total cost of the optimal assignment
     total = cost[row_ind, col_ind]
@@ -247,9 +230,9 @@ for number in range(4):
     digitStripes.append(supervisor.getFromDef('DigitBottomLeft' + str(number)))
     digitStripes.append(supervisor.getFromDef('DigitBottomRight' + str(number)))
 
-##setup digit stripes dynamically
-digit_cube_size = 1.1
-digit_space_between = 0.75
+##setup digit stripes dynamically put stripes in right positions
+digit_cube_size = 1.4
+digit_space_between = 0.85
 digit_z = 0.01
 arena_size = supervisor.getFromDef('ARENA').getField('floorSize').getSFVec2f()
 digitbeginpositions = [
@@ -258,15 +241,15 @@ digitbeginpositions = [
     [(arena_size[0]/2)+((1*digit_space_between)+(0.5*digit_cube_size)),(arena_size[1]/2)],
     [(arena_size[0]/2)+((2*digit_space_between)+(1.5*digit_cube_size)),(arena_size[1]/2)]
 ]
-print(digitbeginpositions)
+
 for i in range(0,4):
-    supervisor.getFromDef('DigitTop' + str(i)).getField("translation").setSFVec3f([digitbeginpositions[i][0],digitbeginpositions[i][1]+digit_cube_size,digit_z])
-    supervisor.getFromDef('DigitMid' + str(i)).getField("translation").setSFVec3f([digitbeginpositions[i][0],digitbeginpositions[i][1],digit_z])
-    supervisor.getFromDef('DigitBottom' + str(i)).getField("translation").setSFVec3f([digitbeginpositions[i][0],digitbeginpositions[i][1]-digit_cube_size,digit_z])
-    supervisor.getFromDef('DigitTopLeft' + str(i)).getField("translation").setSFVec3f([digitbeginpositions[i][0]-(0.5*digit_cube_size),digitbeginpositions[i][1]+(0.5*digit_cube_size),digit_z])
-    supervisor.getFromDef('DigitTopRight' + str(i)).getField("translation").setSFVec3f([digitbeginpositions[i][0]+(0.5*digit_cube_size),digitbeginpositions[i][1]+(0.5*digit_cube_size),digit_z])
-    supervisor.getFromDef('DigitBottomLeft' + str(i)).getField("translation").setSFVec3f([digitbeginpositions[i][0]-(0.5*digit_cube_size),digitbeginpositions[i][1]-(0.5*digit_cube_size),digit_z])
-    supervisor.getFromDef('DigitBottomRight' + str(i)).getField("translation").setSFVec3f([digitbeginpositions[i][0]+(0.5*digit_cube_size),digitbeginpositions[i][1]-(0.5*digit_cube_size),digit_z])
+    digitStripes[0+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0],digitbeginpositions[i][1]+digit_cube_size,digit_z])
+    digitStripes[1+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0],digitbeginpositions[i][1],digit_z])
+    digitStripes[2+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0],digitbeginpositions[i][1]-digit_cube_size,digit_z])
+    digitStripes[3+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0]-(0.5*digit_cube_size),digitbeginpositions[i][1]+(0.5*digit_cube_size),digit_z])
+    digitStripes[4+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0]+(0.5*digit_cube_size),digitbeginpositions[i][1]+(0.5*digit_cube_size),digit_z])
+    digitStripes[5+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0]-(0.5*digit_cube_size),digitbeginpositions[i][1]-(0.5*digit_cube_size),digit_z])
+    digitStripes[6+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0]+(0.5*digit_cube_size),digitbeginpositions[i][1]-(0.5*digit_cube_size),digit_z])
     
 
 #put robots at random positions
@@ -274,33 +257,52 @@ for robot in robots:
     InitialPos = robot.getField("translation")
     if(robot.getField("name").getSFString() == "robo0"):
         NewPos = [
-            14,        # x from -7.2 to 3.2
-            5.5,  # y from -7.2 to 7.2
-            0.1                            # z fixed at 0.1
+            13.4,
+            5.4,
+            0.1
         ]
     else:
         NewPos = [
-            19.2* random(), 
-            10.8 * random(),  
+            arena_size[0] * random(), 
+            arena_size[1] * random(),  
             0.1
         ]
     InitialPos.setSFVec3f(NewPos)
+
+# this is for initial position robot for world file
+# robocount = 1
+# for robot in robots:
+    # InitialPos = robot.getField("translation")
+    # NewPos = [
+        # (1/29)* robocount * arena_size[0], 
+        # (arena_size[1]/2),  
+        # 0.1
+    # ]
+    # robocount += 1
+    # InitialPos.setSFVec3f(NewPos)
     
 #put obstacles at random positions    
 for obstacle in obstacles:
     InitialPos = obstacle.getField("translation")
-    NewPos=[int(80*random()-40)/10,int(80*random()-40)/10,0.1]
+    NewPos=[
+        arena_size[0] * random(),
+        arena_size[1] * random(),
+        0.1
+    ]
     # InitialPos.setSFVec3f(NewPos)
 
 # each index is for the robot with the same index in robot, each number is the index for the digitstripe
 goalAssignments = [-1] * len(robots)
-# print(robots)
 SERVER_ADDRESS = '145.137.55.132'  # Change this to your server's IP address
 SERVER_PORT = 8000  # Change this to the port your server is listening on
-# assignStripesToRobots()
 firstloop = True
 stepcounter = 0
 sendcounter = 0
+
+x_mapping = 960
+y_mapping = 540
+
+amount_of_fysical_robots = 2
 
 # Main loop:
 while supervisor.step(timestep) != -1:
@@ -313,21 +315,18 @@ while supervisor.step(timestep) != -1:
         process_robot(robot)
     
     if sendcounter == 20:
-        v0 = supervisor.getFromDef('ROBOT0').getField("translation").getSFVec3f()
-        v1 = supervisor.getFromDef('ROBOT1').getField("translation").getSFVec3f()
-        # Example positions of two robots
-        new_x0 = (v0[0] + 7.2) / 10.4 * 640
-        new_y0 = (v0[1] + 7.2) / 14.4 * 340
+        data = {'type': 'webots'}
+        for i in range(0,amount_of_fysical_robots):
+            position = robots[i].getField("translation").getSFVec3f()
+            
+            new_x = (position[0]) / arena_size[0] * x_mapping
+            new_y = (position[1]) / arena_size[1] * y_mapping
+            
+            robot_position = {"x": new_x, "y": new_y}
+            data[i] = robot_position
+            #TODO Als de positie buiten het speelveld is, assign het uiterste van het speelveld
         
-        new_x1 = (v1[0] + 7.2) / 10.4 * 640
-        new_y1 = (v1[1] + 7.2) / 14.4 * 340
-        
-        robot0_position = {"x": new_x0, "y": new_y0}
-        robot1_position = {"x": new_x1, "y": new_y1}
-        
-        # Combine positions into one dictionary
-        data = {'type': 'webots',0: robot0_position, 1: robot1_position}
-        #print('sendjson: ', data)
+        print('sendjson: ', data)
         #send_json_data(data)
         sendcounter = 0
     else:

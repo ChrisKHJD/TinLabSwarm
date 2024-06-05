@@ -9,7 +9,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.5664147676524788 0.5650005924431205 0.599957199743541 2.063025952010915
-  position 9.407873030366245 3.9708561779110307 24.748007695447818
+  position 9.408309319585664 3.7998936191518835 27.718148132021785
 }
 TexturedBackground {
 }
@@ -18,219 +18,251 @@ TexturedBackgroundLight {
 DEF ARENA RectangleArena {
   translation 9.6 5.4 0
   floorSize 19.2 10.8
+  floorTileSize 4 4
 }
 DEF ROBOT0 MyFirstProto {
-  translation 0 0 0.0996076
+  translation 0.6400000741197525 5.400003490097942 0.08995813014725432
+  rotation -0.7049642630789312 -0.12814797139751083 -0.6975696991758472 0.003872187385150813
   supervisor FALSE
   name "robo0"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT1 MyFirstProto {
-  translation 1.19 0.08 0.099608
+  translation 1.2800000742319562 5.40000348835062 0.08995812833827055
+  rotation -0.9487892171992652 -0.13777218628267712 -0.2842847973657696 0.0027391420287387574
   supervisor FALSE
   name "robo1"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT2 MyFirstProto {
-  translation 1.29 -3.37 0.199608
+  translation 1.9200000742912156 5.40000348962658 0.0899581296596504
+  rotation -0.9641522981751222 -0.2653483386877249 0.0007778684301776562 0.00259091683397207
   supervisor FALSE
   name "robo2"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT3 MyFirstProto {
-  translation 1.39 -2.65 0.299608
+  translation 2.5600000743226374 5.400003493023211 0.08995813317689454
+  rotation -0.8958245707875637 -0.4444065899330298 0.001058866078947463 0.0028225183561123766
   supervisor FALSE
   name "robo3"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT4 MyFirstProto {
-  translation 1.49 -1.78 0.399608
+  translation 3.2000000742943655 5.4000034900512155 0.08995813009935728
+  rotation -0.9555079125724275 -0.29496442130358497 0.0007868777055229805 0.0026068653204232442
   supervisor FALSE
   name "robo4"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT5 MyFirstProto {
-  translation 1.59 -0.87 0.499608
+  translation 3.8399999256088786 5.400003504389237 0.08995814494703278
+  rotation -0.5047054271770989 0.8632901623336356 0.001589778584280483 0.004256008471761736
   supervisor FALSE
   name "robo5"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT6 MyFirstProto {
-  translation 1.21 0.52 0.599608
+  translation 4.479999925429512 5.400003517237953 0.08995815825398568
+  rotation -0.5249696005911116 0.8511013751500143 -0.005776475825575087 0.0059265930588117645
   supervisor FALSE
   name "robo6"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT7 MyFirstProto {
-  translation 1.79 1.71 0.699608
+  translation 5.120000076254766 5.400003639083877 0.08995828450509558
+  rotation -0.16653261940453692 -0.9300028927792017 0.3276606569250883 0.02701029177699179
   supervisor FALSE
   name "robo7"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT8 MyFirstProto {
-  translation 1.89 1.61 0.799608
+  translation 5.760000078716807 5.400003721495869 0.08995836996282656
+  rotation -0.030041261921017224 -0.7539025079949432 0.6562991170351574 0.056788815035149764
   supervisor FALSE
   name "robo8"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT9 MyFirstProto {
-  translation 1.99 1.51 0.899608
+  translation 6.4000000764958775 5.400003775345068 0.08995842581451245
+  rotation -0.11273396340093828 -0.9936245463619623 0.0011464566717712657 0.04907576961842231
   supervisor FALSE
   name "robo9"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT10 MyFirstProto {
-  translation 2.09 1.41 0.999608
+  translation 7.040000077729287 5.400003654838553 0.08995830084163828
+  rotation 0.012505372883936763 -0.7130805086761717 0.7009706155005115 0.04655284950708041
   supervisor FALSE
   name "robo10"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT11 MyFirstProto {
-  translation 2.19 1.31 1.099608
+  translation 7.680000075443229 5.400003749119321 0.08995839860311564
+  rotation -0.056023857615681405 -0.9818389695541206 -0.18125552472341547 0.04752300981331637
   supervisor FALSE
   name "robo11"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT12 MyFirstProto {
-  translation 2.29 1.21 1.199608
+  translation 8.320000080422082 5.4000035907774055 0.08995823444926909
+  rotation -0.029388843237921323 -0.40198088940691035 0.915176300198364 0.04982619270882681
   supervisor FALSE
   name "robo12"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT13 MyFirstProto {
-  translation 2.39 1.11 1.299608
+  translation 8.96000007434232 5.40000363991367 0.08995828535896241
+  rotation -0.08628176289046452 -0.8722047963820124 -0.4814709238995911 0.030754474795431096
   supervisor FALSE
   name "robo13"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT14 MyFirstProto {
-  translation 2.49 1.01 1.399608
+  translation 9.60000006970993 5.400003679524492 0.08995832640898077
+  rotation -0.10081097057943691 -0.30774955330143894 -0.9461117062237401 0.08713870025988063
   supervisor FALSE
   name "robo14"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT15 MyFirstProto {
-  translation 2.59 0.91 1.499608
+  translation 10.24000007887894 5.400003588987587 0.08995823259556646
+  rotation 0.0784685864873165 -0.39673805432947956 0.9145718108391169 0.06645217218934714
   supervisor FALSE
   name "robo15"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT16 MyFirstProto {
-  translation 2.69 0.81 1.599608
+  translation 10.880000074275246 5.400003629280314 0.08995827433713979
+  rotation -0.08376780672399438 -0.8624629246120763 -0.4991399184860252 0.029157969857751435
   supervisor FALSE
   name "robo16"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT17 MyFirstProto {
-  translation 2.79 0.71 1.699608
+  translation 11.519999934831496 5.400003266668578 0.08995789921153113
+  rotation 0.27981102050442763 0.9128786928231488 -0.2972512152940168 0.03856459243140219
   supervisor FALSE
   name "robo17"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT18 MyFirstProto {
-  translation 2.89 0.61 1.799608
+  translation 12.16000007536896 5.400003678497414 0.08995832536171683
+  rotation -0.339996170609382 -0.8740727597858612 -0.34698618786816876 0.0355880390670761
   supervisor FALSE
   name "robo18"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT19 MyFirstProto {
-  translation 2.99 0.51 1.899608
+  translation 12.799999921901957 5.400003543313868 0.08995818527348884
+  rotation -0.11703412779514519 0.17965298656161863 -0.976743475714438 0.046027188921223136
   supervisor FALSE
   name "robo19"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT20 MyFirstProto {
-  translation 3.09 0.41 1.999608
+  translation 13.440000078187678 5.400003465724726 0.08995810491591488
+  rotation 0.037370641873024635 -0.28630340271872556 0.9574099418314378 0.06407190973496232
   supervisor FALSE
   name "robo20"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT21 MyFirstProto {
-  translation 3.19 0.31 2.099608
+  translation 14.079999924533725 5.400003636420691 0.0899582817419643
+  rotation -0.0020309416877182375 0.9946080619380793 -0.10368547826787869 0.029330622303732592
   supervisor FALSE
   name "robo21"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT22 MyFirstProto {
-  translation 3.29 0.21 2.199608
+  translation 14.719999923876598 5.400003740610687 0.08995838977942969
+  rotation -0.005078317594946013 0.9978144047386567 -0.06588341510915413 0.04770655027234025
   supervisor FALSE
   name "robo22"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT23 MyFirstProto {
-  translation 3.39 0.11 2.299608
+  translation 15.359999923120306 5.4000038298041915 0.08995848232984249
+  rotation -0.12819930846787767 0.9917348691815507 0.005185224952726098 0.05717156580685864
   supervisor FALSE
   name "robo23"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT24 MyFirstProto {
-  translation 3.49 -0.01 2.399608
+  translation 15.999999925705946 5.400003511451447 0.08995815226040133
+  rotation -0.3815532066421843 0.8383498887578095 0.38934125715217355 0.005683808257333206
   supervisor FALSE
   name "robo24"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT25 MyFirstProto {
-  translation 3.59 -0.11 2.499608
+  translation 16.639999927140984 5.400003445417401 0.08995808388554721
+  rotation 0.8513284482498976 0.38205180769100144 0.359550120901745 0.010133760731438145
   supervisor FALSE
   name "robo25"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT26 MyFirstProto {
-  translation 3.69 0.21 2.599608
+  translation 17.27999992570238 5.400003493612024 0.08995813378653987
+  rotation -0.8434777451381299 0.5281602823509071 0.09793880540269105 0.002828544889678447
   supervisor FALSE
   name "robo26"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT27 MyFirstProto {
-  translation 3.79 0.31 2.699608
+  translation 17.919999924491155 5.400003548208836 0.08995819033092813
+  rotation -0.1207320543801735 0.49156199202237444 0.8624329417665688 0.021516800400218132
   supervisor FALSE
   name "robo27"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF OBSTACLE0 MyFirstProto {
-  translation 7.29 0.36 0.1
+  translation 7.28995 -1.80005 0.0990177
+  rotation 0.7071067811865187 -0.7071067811865763 -6.131696466085487e-15 0.0006788965800066874
   supervisor FALSE
   name "obstacle0"
   BodyColor 0 0 1
   controller "<none>"
 }
 DEF OBSTACLE1 MyFirstProto {
-  translation 5.97 0.34 0.1
+  translation 5.96995 -1.80005 0.0990033
+  rotation 0.707106781186542 -0.7071067811865531 3.161043226669603e-15 0.0006788965800067258
   supervisor FALSE
   name "obstacle0(1)"
   BodyColor 0 0 1
   controller "<none>"
 }
 DEF OBJECTIVE0 MyFirstProto {
-  translation 6.33 -2.63 0.109608
+  translation 6.66 -1.54 0.0995787
+  rotation 0.7804995001776297 0.6243996001421038 0.0307517408426135 2.7311077160141355e-17
   supervisor FALSE
   name "objective"
   BodyColor 1 0 0
@@ -242,7 +274,7 @@ Robot {
   supervisor TRUE
 }
 DEF DigitTop0 Robot {
-  translation -3.22 -2.85 0.01
+  translation 5.8 6.800000000000001 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -256,7 +288,7 @@ DEF DigitTop0 Robot {
   controller "<none>"
 }
 DEF DigitMid0 Robot {
-  translation -2.03 -2.85 0.01
+  translation 5.8 5.4 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -271,7 +303,7 @@ DEF DigitMid0 Robot {
   controller "<none>"
 }
 DEF DigitBottom0 Robot {
-  translation -0.87 -2.85 0.01
+  translation 5.8 4 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -286,7 +318,7 @@ DEF DigitBottom0 Robot {
   controller "<none>"
 }
 DEF DigitTopLeft0 Robot {
-  translation -2.62 -3.37 0.01
+  translation 5.1 6.1000000000000005 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -301,7 +333,7 @@ DEF DigitTopLeft0 Robot {
   controller "<none>"
 }
 DEF DigitTopRight0 Robot {
-  translation -2.67 -2.34 0.01
+  translation 6.5 6.1000000000000005 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -316,7 +348,7 @@ DEF DigitTopRight0 Robot {
   controller "<none>"
 }
 DEF DigitBottomLeft0 Robot {
-  translation -1.44 -3.34 0.01
+  translation 5.1 4.7 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -331,7 +363,7 @@ DEF DigitBottomLeft0 Robot {
   controller "<none>"
 }
 DEF DigitBottomRight0 Robot {
-  translation -1.45 -2.34 0.01
+  translation 6.5 4.7 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -346,7 +378,7 @@ DEF DigitBottomRight0 Robot {
   controller "<none>"
 }
 DEF DigitTop1 Robot {
-  translation -3.22 -0.78 0.01
+  translation 8.05 6.800000000000001 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -361,7 +393,7 @@ DEF DigitTop1 Robot {
   controller "<none>"
 }
 DEF DigitMid1 Robot {
-  translation -2.03 -0.78 0.01
+  translation 8.05 5.4 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -376,7 +408,7 @@ DEF DigitMid1 Robot {
   controller "<none>"
 }
 DEF DigitBottom1 Robot {
-  translation -0.87 -0.78 0.01
+  translation 8.05 4 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -391,7 +423,7 @@ DEF DigitBottom1 Robot {
   controller "<none>"
 }
 DEF DigitTopLeft1 Robot {
-  translation -2.62 -1.3 0.01
+  translation 7.3500000000000005 6.1000000000000005 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -406,7 +438,7 @@ DEF DigitTopLeft1 Robot {
   controller "<none>"
 }
 DEF DigitTopRight1 Robot {
-  translation -2.67 -0.27 0.01
+  translation 8.75 6.1000000000000005 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -421,7 +453,7 @@ DEF DigitTopRight1 Robot {
   controller "<none>"
 }
 DEF DigitBottomLeft1 Robot {
-  translation -1.44 -1.27 0.01
+  translation 7.3500000000000005 4.7 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -435,7 +467,7 @@ DEF DigitBottomLeft1 Robot {
   name "robot(5)5"
 }
 DEF DigitBottomRight1 Robot {
-  translation -1.45 -0.27 0.01
+  translation 8.75 4.7 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -450,7 +482,7 @@ DEF DigitBottomRight1 Robot {
   controller "<none>"
 }
 DEF DigitTop2 Robot {
-  translation -3.22 1.72 0.01
+  translation 11.149999999999999 6.800000000000001 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -465,7 +497,7 @@ DEF DigitTop2 Robot {
   controller "<none>"
 }
 DEF DigitMid2 Robot {
-  translation -2.03 1.72 0.01
+  translation 11.149999999999999 5.4 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -480,7 +512,7 @@ DEF DigitMid2 Robot {
   controller "<none>"
 }
 DEF DigitBottom2 Robot {
-  translation -0.87 1.72 0.01
+  translation 11.149999999999999 4 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -495,7 +527,7 @@ DEF DigitBottom2 Robot {
   controller "<none>"
 }
 DEF DigitTopLeft2 Robot {
-  translation -2.62 1.2 0.01
+  translation 10.45 6.1000000000000005 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -510,7 +542,7 @@ DEF DigitTopLeft2 Robot {
   controller "<none>"
 }
 DEF DigitTopRight2 Robot {
-  translation -2.67 2.23 0.01
+  translation 11.849999999999998 6.1000000000000005 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -524,7 +556,7 @@ DEF DigitTopRight2 Robot {
   name "robot(4)6"
 }
 DEF DigitBottomLeft2 Robot {
-  translation -1.44 1.2 0.01
+  translation 10.45 4.7 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -539,7 +571,7 @@ DEF DigitBottomLeft2 Robot {
   controller "<none>"
 }
 DEF DigitBottomRight2 Robot {
-  translation -1.45 2.23 0.01
+  translation 11.849999999999998 4.7 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -554,7 +586,7 @@ DEF DigitBottomRight2 Robot {
   controller "<none>"
 }
 DEF DigitTop3 Robot {
-  translation -3.22 3.79 0.01
+  translation 13.399999999999999 6.800000000000001 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -569,7 +601,7 @@ DEF DigitTop3 Robot {
   controller "<none>"
 }
 DEF DigitMid3 Robot {
-  translation -2.03 3.79 0.01
+  translation 13.399999999999999 5.4 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -584,7 +616,7 @@ DEF DigitMid3 Robot {
   controller "<none>"
 }
 DEF DigitBottom3 Robot {
-  translation -0.87 3.79 0.01
+  translation 13.399999999999999 4 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -599,7 +631,7 @@ DEF DigitBottom3 Robot {
   controller "<none>"
 }
 DEF DigitTopLeft3 Robot {
-  translation -2.62 3.27 0.01
+  translation 12.7 6.1000000000000005 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -614,7 +646,7 @@ DEF DigitTopLeft3 Robot {
   controller "<none>"
 }
 DEF DigitTopRight3 Robot {
-  translation -2.67 4.3 0.01
+  translation 14.099999999999998 6.1000000000000005 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -629,7 +661,7 @@ DEF DigitTopRight3 Robot {
   controller "<none>"
 }
 DEF DigitBottomLeft3 Robot {
-  translation -1.44 3.27 0.01
+  translation 12.7 4.7 0.01
   children [
     Shape {
       appearance PBRAppearance {
@@ -644,7 +676,7 @@ DEF DigitBottomLeft3 Robot {
   controller "<none>"
 }
 DEF DigitBottomRight3 Robot {
-  translation -1.45 4.3 0.01
+  translation 14.099999999999998 4.7 0.01
   children [
     Shape {
       appearance PBRAppearance {
