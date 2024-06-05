@@ -180,24 +180,28 @@ def assignStripesToRobots():
     print("Total cost of the optimal assignment:", total_cost)
     # print('after assignments', goalAssignments)
 
-def send_json_data(server_address, server_port, data):
-    # Create a socket object
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client_socket = None;
 
+def setup_connection(server_address, server_port):
+    global client_socket
     try:
-        # Connect to the server
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+         # Connect to the server
         client_socket.connect((server_address, server_port))
-
+    except Exception as e:
+        print("No connection was made:", e)
+        
+def send_json_data(data):
+    global client_socket
+    try:
         # Convert data to JSON format
         json_data = json.dumps(data)
 
         # Send JSON data to the server
         client_socket.sendall(json_data.encode())
-
-        # Close the connection
-        client_socket.close()
     except Exception as e:
-        print("Error:", e)
+        print("Error sending data:", e)
+
 # create the Robot instance.
 supervisor = Supervisor()
 
@@ -246,7 +250,18 @@ for number in range(4):
 #put robots at random positions
 for robot in robots:
     InitialPos = robot.getField("translation")
-    NewPos=[int(80*random()-40)/10,int(80*random()-40)/10,0.1]
+    if(robot.getField("name").getSFString() == "robo0"):
+        NewPos = [
+            -2.66,        # x from -7.2 to 3.2
+            3.28,  # y from -7.2 to 7.2
+            0.1                            # z fixed at 0.1
+        ]
+    else:
+        NewPos = [
+            10.4 * random() - 7.2,        # x from -7.2 to 3.2
+            14.4 * random() - 7.2,  # y from -7.2 to 7.2
+            0.1                            # z fixed at 0.1
+        ]
     InitialPos.setSFVec3f(NewPos)
     
 #put obstacles at random positions    
@@ -258,17 +273,19 @@ for obstacle in obstacles:
 # each index is for the robot with the same index in robot, each number is the index for the digitstripe
 goalAssignments = [-1] * len(robots)
 # print(robots)
-SERVER_ADDRESS = '145.137.54.45'  # Change this to your server's IP address
+SERVER_ADDRESS = '145.137.55.132'  # Change this to your server's IP address
 SERVER_PORT = 8000  # Change this to the port your server is listening on
 # assignStripesToRobots()
 firstloop = True
 stepcounter = 0
 sendcounter = 0
+
 # Main loop:
 while supervisor.step(timestep) != -1:
     if firstloop:
         assignStripesToRobots()
         firstloop=False
+        setup_connection(SERVER_ADDRESS, SERVER_PORT)
         
     for robot in robots:
         process_robot(robot)
@@ -277,13 +294,19 @@ while supervisor.step(timestep) != -1:
         v0 = supervisor.getFromDef('ROBOT0').getField("translation").getSFVec3f()
         v1 = supervisor.getFromDef('ROBOT1').getField("translation").getSFVec3f()
         # Example positions of two robots
-        robot0_position = {"time": datetime.now().strftime("%H:%M:%S"),"x": v0[0], "y": v0[1]}
-        robot1_position = {"time": datetime.now().strftime("%H:%M:%S"),"x": v1[0], "y": v1[1]}
-
+        new_x0 = (v0[0] + 7.2) / 10.4 * 640
+        new_y0 = (v0[1] + 7.2) / 14.4 * 340
+        
+        new_x1 = (v1[0] + 7.2) / 10.4 * 640
+        new_y1 = (v1[1] + 7.2) / 14.4 * 340
+        
+        robot0_position = {"x": new_x0, "y": new_y0}
+        robot1_position = {"x": new_x1, "y": new_y1}
+        
         # Combine positions into one dictionary
-        data = {0: robot0_position, 1: robot1_position}
+        data = {'type': 'webots',0: robot0_position, 1: robot1_position}
         print('sendjson: ', data)
-        # send_json_data(SERVER_ADDRESS, SERVER_PORT, data)
+        send_json_data(data)
         sendcounter = 0
     else:
         sendcounter += 1
@@ -315,3 +338,5 @@ while supervisor.step(timestep) != -1:
     stepcounter += 1
     
 # Enter here exit cleanup code.
+# Close the connection
+client_socket.close()
