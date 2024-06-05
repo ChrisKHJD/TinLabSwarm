@@ -40,18 +40,8 @@ def DistancesToDigits(CurrentRobot):
     distances=[];
     i=0
     for each in digitStripes:
-        if i < 7:
-            if numbers[FirstNumberToShow][i] == 1:
-                distances.append(Distance(CurrentRobot.getField("translation"),each.getField("translation")))
-        elif i < 14:
-            if numbers[SecondNumberToShow][i-7] == 1:
-                distances.append(Distance(CurrentRobot.getField("translation"),each.getField("translation")))
-        elif i < 21:
-            if numbers[ThirdNumberToShow][i-14] == 1:
-                distances.append(Distance(CurrentRobot.getField("translation"),each.getField("translation")))
-        elif i < 28:
-            if numbers[FourthNumberToShow][i-21] == 1:
-                distances.append(Distance(CurrentRobot.getField("translation"),each.getField("translation")))
+        if numbers[FirstNumberToShow][i] == 1:
+            distances.append(Distance(CurrentRobot.getField("translation"),each.getField("translation")))
         i+=1
     return(distances)
     
@@ -73,7 +63,7 @@ def getPotential(robot):
     obstaclesPOT = sum(-0.03/x if x <= 1 else 0 for x in obstacledistances)
     
     digitPOT = 0
-    for i in range(numbers[FirstNumberToShow].count(1) + numbers[SecondNumberToShow].count(1) + numbers[ThirdNumberToShow].count(1)+ numbers[FourthNumberToShow].count(1)):
+    for i in range(numbers[FirstNumberToShow].count(1)):
         robotindex = robots.index(robot)
         digitobjindex = goalAssignments[robotindex] #index of digit it needs to go
         # print(robot.getField("name").getSFString(),'digitobjindex', digitobjindex)
@@ -151,7 +141,7 @@ def assignStripesToRobots():
         goalAssignments[i] = -1
 
     row_ind, col_ind = linear_sum_assignment(cost)
-    for i in range(numbers[FirstNumberToShow].count(1) + numbers[SecondNumberToShow].count(1) + numbers[ThirdNumberToShow].count(1)+ numbers[FourthNumberToShow].count(1)): #  is the amount of objectives should be amount
+    for i in range(numbers[FirstNumberToShow].count(1)): #  is the amount of objectives should be amount
         print('robotindex',row_ind[i],'is going to digitIndex',col_ind[i])
         goalAssignments[row_ind[i]] = col_ind[i]
     
@@ -191,9 +181,6 @@ supervisor = Supervisor()
 # get the time step of the current world.
 timestep = int(supervisor.getBasicTimeStep())
 FirstNumberToShow = 2
-SecondNumberToShow = 3
-ThirdNumberToShow = 5
-FourthNumberToShow = 8
 numbers = [
 [1,0,1,1,1,1,1],#0
 [0,0,0,0,1,0,1],#1
@@ -209,7 +196,7 @@ numbers = [
 
 #fill robots
 robots = []
-for i in range(28):
+for i in range(7):
     robots.append(supervisor.getFromDef('ROBOT' + str(i)))
     
 obstacles = []
@@ -221,7 +208,7 @@ for i in range(1):
     objectives.append(supervisor.getFromDef('OBJECTIVE' + str(i)))
     
 digitStripes = []
-for number in range(4):
+for number in range(1):
     digitStripes.append(supervisor.getFromDef('DigitTop' + str(number)))
     digitStripes.append(supervisor.getFromDef('DigitMid' + str(number)))
     digitStripes.append(supervisor.getFromDef('DigitBottom' + str(number)))
@@ -231,25 +218,22 @@ for number in range(4):
     digitStripes.append(supervisor.getFromDef('DigitBottomRight' + str(number)))
 
 ##setup digit stripes dynamically put stripes in right positions
-digit_cube_size = 1.4
-digit_space_between = 0.85
+digit_cube_size = 3
+#digit_space_between = 0.85
 digit_z = 0.01
 arena_size = supervisor.getFromDef('ARENA').getField('floorSize').getSFVec2f()
 digitbeginpositions = [
-    [(arena_size[0]/2)-((2*digit_space_between)+(1.5*digit_cube_size)),(arena_size[1]/2)],
-    [(arena_size[0]/2)-((1*digit_space_between)+(0.5*digit_cube_size)),(arena_size[1]/2)],
-    [(arena_size[0]/2)+((1*digit_space_between)+(0.5*digit_cube_size)),(arena_size[1]/2)],
-    [(arena_size[0]/2)+((2*digit_space_between)+(1.5*digit_cube_size)),(arena_size[1]/2)]
+    [(arena_size[0]/2),(arena_size[1]/2)]
 ]
 
-for i in range(0,4):
-    digitStripes[0+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0],digitbeginpositions[i][1]+digit_cube_size,digit_z])
+for i in range(0,1):
+    digitStripes[0+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0]+digit_cube_size,digitbeginpositions[i][1],digit_z])
     digitStripes[1+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0],digitbeginpositions[i][1],digit_z])
-    digitStripes[2+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0],digitbeginpositions[i][1]-digit_cube_size,digit_z])
-    digitStripes[3+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0]-(0.5*digit_cube_size),digitbeginpositions[i][1]+(0.5*digit_cube_size),digit_z])
-    digitStripes[4+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0]+(0.5*digit_cube_size),digitbeginpositions[i][1]+(0.5*digit_cube_size),digit_z])
-    digitStripes[5+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0]-(0.5*digit_cube_size),digitbeginpositions[i][1]-(0.5*digit_cube_size),digit_z])
-    digitStripes[6+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0]+(0.5*digit_cube_size),digitbeginpositions[i][1]-(0.5*digit_cube_size),digit_z])
+    digitStripes[2+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0]-digit_cube_size,digitbeginpositions[i][1],digit_z])
+    digitStripes[3+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0]+(0.5*digit_cube_size),digitbeginpositions[i][1]+(0.5*digit_cube_size),digit_z])
+    digitStripes[4+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0]+(0.5*digit_cube_size),digitbeginpositions[i][1]-(0.5*digit_cube_size),digit_z])
+    digitStripes[5+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0]-(0.5*digit_cube_size),digitbeginpositions[i][1]+(0.5*digit_cube_size),digit_z])
+    digitStripes[6+i*7].getField("translation").setSFVec3f([digitbeginpositions[i][0]-(0.5*digit_cube_size),digitbeginpositions[i][1]-(0.5*digit_cube_size),digit_z])
     
 
 #put robots at random positions
@@ -269,12 +253,12 @@ for robot in robots:
         ]
     InitialPos.setSFVec3f(NewPos)
 
-# this is for initial position robot for world file
+#this is for initial position robot for world file
 # robocount = 1
 # for robot in robots:
     # InitialPos = robot.getField("translation")
     # NewPos = [
-        # (1/29)* robocount * arena_size[0], 
+        # (1/8)* robocount * arena_size[0], 
         # (arena_size[1]/2),  
         # 0.1
     # ]
@@ -309,7 +293,7 @@ while supervisor.step(timestep) != -1:
     if firstloop:
         assignStripesToRobots()
         firstloop=False
-        #setup_connection(SERVER_ADDRESS, SERVER_PORT)
+        setup_connection(SERVER_ADDRESS, SERVER_PORT)
         
     for robot in robots:
         process_robot(robot)
@@ -321,9 +305,6 @@ while supervisor.step(timestep) != -1:
             
             new_x = (position[0]) / arena_size[0] * x_mapping
             new_y = (position[1]) / arena_size[1] * y_mapping
-            
-            robot_position = {"x": new_x, "y": new_y}
-            data[i] = robot_position
             if new_x > (0.95*x_mapping):
                 new_x = 0.95*x_mapping
             if new_x < (0.05*x_mapping):
@@ -332,37 +313,27 @@ while supervisor.step(timestep) != -1:
                 new_y = 0.95*y_mapping
             if new_y < (0.05*y_mapping):
                 new_y = 0.05*y_mapping
+            
+            robot_position = {"x": new_x, "y": new_y}
+            data[i] = robot_position
+            #TODO Als de positie buiten het speelveld is, assign het uiterste van het speelveld
+            
         
         print('sendjson: ', data)
-        #send_json_data(data)
+        send_json_data(data)
         sendcounter = 0
     else:
         sendcounter += 1
     
     if stepcounter == 300:
-        if FourthNumberToShow < 9:
-            FourthNumberToShow += 1
+        if FirstNumberToShow < 9:
+            FirstNumberToShow += 1
         else:
-            FourthNumberToShow = 0
-            if ThirdNumberToShow < 5:
-                ThirdNumberToShow += 1
-            else:
-                ThirdNumberToShow = 0
-                if (SecondNumberToShow < 9 and FirstNumberToShow < 2) or (SecondNumberToShow < 3 and FirstNumberToShow == 2):
-                    SecondNumberToShow += 1
-                else:
-                    SecondNumberToShow = 0
-                    if FirstNumberToShow < 2:
-                        FirstNumberToShow += 1
-                    else:
-                        FirstNumberToShow = 0
-                        SecondNumberToShow = 0
-                        ThirdNumberToShow = 0
-                        FourthNumberToShow = 0
+            FirstNumberToShow = 0
         
         assignStripesToRobots()
         stepcounter = 0
-        print(FirstNumberToShow,SecondNumberToShow,':',ThirdNumberToShow,FourthNumberToShow)
+        print(FirstNumberToShow)
     stepcounter += 1
     
 # Enter here exit cleanup code.

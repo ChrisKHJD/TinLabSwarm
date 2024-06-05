@@ -6,5 +6,5 @@ maximizedDockId: -1
 centralWidgetVisible: 1
 renderingMode: PLAIN
 orthographicViewHeight: 1
-textFiles: 1 "../Swarm/protos/MyFirstProto.proto" "../Swarm/controllers/supervisor_controller/supervisor_controller.py" "../Swarm/worlds/Swarm.wbt"
+textFiles: 1 "protos/MyFirstProto.proto" "controllers/supervisor_controller/supervisor_controller.py" "worlds/Swarm.wbt"
 consoles: Console:All:All
