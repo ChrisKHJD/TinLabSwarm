@@ -8,25 +8,26 @@ IMPORTABLE EXTERNPROTO "../protos/MyFirstProto.proto"
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.6901133480715677 0.0028627668332804816 0.7236956344897414 3.1355926194724573
-  position -0.9102481182695723 -0.37233125710685466 20.091522148675796
+  orientation -0.5664147676524788 0.5650005924431205 0.599957199743541 2.063025952010915
+  position 9.407873030366245 3.9708561779110307 24.748007695447818
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
-RectangleArena {
-  floorSize 15 15
+DEF ARENA RectangleArena {
+  translation 9.6 5.4 0
+  floorSize 19.2 10.8
 }
 DEF ROBOT0 MyFirstProto {
-  translation 1.6198307790386746e-09 1.1800000016198302 0.09960760087183422
+  translation 0 0 0.0996076
   supervisor FALSE
   name "robo0"
   BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT1 MyFirstProto {
-  translation 1.19 1.89 0.099608
+  translation 1.19 0.08 0.099608
   supervisor FALSE
   name "robo1"
   BodyColor 0 1 0
@@ -61,7 +62,7 @@ DEF ROBOT5 MyFirstProto {
   controller "<none>"
 }
 DEF ROBOT6 MyFirstProto {
-  translation 1.69 0.52 0.599608
+  translation 1.21 0.52 0.599608
   supervisor FALSE
   name "robo6"
   BodyColor 0 1 0
@@ -215,14 +216,14 @@ DEF ROBOT27 MyFirstProto {
   controller "<none>"
 }
 DEF OBSTACLE0 MyFirstProto {
-  translation 6 3.1 0.1
+  translation 7.29 0.36 0.1
   supervisor FALSE
   name "obstacle0"
   BodyColor 0 0 1
   controller "<none>"
 }
 DEF OBSTACLE1 MyFirstProto {
-  translation 5.97 3.63 0.1
+  translation 5.97 0.34 0.1
   supervisor FALSE
   name "obstacle0(1)"
   BodyColor 0 0 1

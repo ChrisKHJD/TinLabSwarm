@@ -247,20 +247,42 @@ for number in range(4):
     digitStripes.append(supervisor.getFromDef('DigitBottomLeft' + str(number)))
     digitStripes.append(supervisor.getFromDef('DigitBottomRight' + str(number)))
 
+##setup digit stripes dynamically
+digit_cube_size = 1.1
+digit_space_between = 0.75
+digit_z = 0.01
+arena_size = supervisor.getFromDef('ARENA').getField('floorSize').getSFVec2f()
+digitbeginpositions = [
+    [(arena_size[0]/2)-((2*digit_space_between)+(1.5*digit_cube_size)),(arena_size[1]/2)],
+    [(arena_size[0]/2)-((1*digit_space_between)+(0.5*digit_cube_size)),(arena_size[1]/2)],
+    [(arena_size[0]/2)+((1*digit_space_between)+(0.5*digit_cube_size)),(arena_size[1]/2)],
+    [(arena_size[0]/2)+((2*digit_space_between)+(1.5*digit_cube_size)),(arena_size[1]/2)]
+]
+print(digitbeginpositions)
+for i in range(0,4):
+    supervisor.getFromDef('DigitTop' + str(i)).getField("translation").setSFVec3f([digitbeginpositions[i][0],digitbeginpositions[i][1]+digit_cube_size,digit_z])
+    supervisor.getFromDef('DigitMid' + str(i)).getField("translation").setSFVec3f([digitbeginpositions[i][0],digitbeginpositions[i][1],digit_z])
+    supervisor.getFromDef('DigitBottom' + str(i)).getField("translation").setSFVec3f([digitbeginpositions[i][0],digitbeginpositions[i][1]-digit_cube_size,digit_z])
+    supervisor.getFromDef('DigitTopLeft' + str(i)).getField("translation").setSFVec3f([digitbeginpositions[i][0]-(0.5*digit_cube_size),digitbeginpositions[i][1]+(0.5*digit_cube_size),digit_z])
+    supervisor.getFromDef('DigitTopRight' + str(i)).getField("translation").setSFVec3f([digitbeginpositions[i][0]+(0.5*digit_cube_size),digitbeginpositions[i][1]+(0.5*digit_cube_size),digit_z])
+    supervisor.getFromDef('DigitBottomLeft' + str(i)).getField("translation").setSFVec3f([digitbeginpositions[i][0]-(0.5*digit_cube_size),digitbeginpositions[i][1]-(0.5*digit_cube_size),digit_z])
+    supervisor.getFromDef('DigitBottomRight' + str(i)).getField("translation").setSFVec3f([digitbeginpositions[i][0]+(0.5*digit_cube_size),digitbeginpositions[i][1]-(0.5*digit_cube_size),digit_z])
+    
+
 #put robots at random positions
 for robot in robots:
     InitialPos = robot.getField("translation")
     if(robot.getField("name").getSFString() == "robo0"):
         NewPos = [
-            -2.66,        # x from -7.2 to 3.2
-            3.28,  # y from -7.2 to 7.2
+            14,        # x from -7.2 to 3.2
+            5.5,  # y from -7.2 to 7.2
             0.1                            # z fixed at 0.1
         ]
     else:
         NewPos = [
-            10.4 * random() - 7.2,        # x from -7.2 to 3.2
-            14.4 * random() - 7.2,  # y from -7.2 to 7.2
-            0.1                            # z fixed at 0.1
+            19.2* random(), 
+            10.8 * random(),  
+            0.1
         ]
     InitialPos.setSFVec3f(NewPos)
     
@@ -285,7 +307,7 @@ while supervisor.step(timestep) != -1:
     if firstloop:
         assignStripesToRobots()
         firstloop=False
-        setup_connection(SERVER_ADDRESS, SERVER_PORT)
+        #setup_connection(SERVER_ADDRESS, SERVER_PORT)
         
     for robot in robots:
         process_robot(robot)
@@ -305,8 +327,8 @@ while supervisor.step(timestep) != -1:
         
         # Combine positions into one dictionary
         data = {'type': 'webots',0: robot0_position, 1: robot1_position}
-        print('sendjson: ', data)
-        send_json_data(data)
+        #print('sendjson: ', data)
+        #send_json_data(data)
         sendcounter = 0
     else:
         sendcounter += 1
