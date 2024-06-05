@@ -3,11 +3,11 @@ import cv2
 import imutils
 from inference import get_model
 
-MODELID = "swarmkeypoint/1"
+MODELID = "robot-location-and-orientation/1"
 APIKEY = "CnyYmNzp3FktcouTB3d5"
 IMAGE_PATH = "testimage.jpg"
-FRAME_WIDTH = 1920  #640
-FRAME_HEIGHT = 1080  #480
+FRAME_WIDTH = 960  #640
+FRAME_HEIGHT = 540  #480
 model = get_model(model_id=MODELID, api_key=APIKEY)
 
 

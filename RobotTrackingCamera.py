@@ -7,10 +7,10 @@ import imutils
 from inference import get_model
 
 CAMERA_URL = "http://145.24.238.10:8080//shot.jpg"
-MODEL_ID = "swarmkeypoint/1"
+MODEL_ID = "robot-location-and-orientation/1"
 APIKEY = "CnyYmNzp3FktcouTB3d5"
-FRAME_WIDTH = 640
-FRAME_HEIGHT = 480
+FRAME_WIDTH = 960
+FRAME_HEIGHT = 540
 
 model = get_model(model_id=MODEL_ID, api_key=APIKEY)
 chariots = {}

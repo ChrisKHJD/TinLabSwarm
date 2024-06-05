@@ -8,10 +8,10 @@ from inference import get_model
 from time import sleep
 
 CAMERA_URL = "http://145.24.238.211:8080//shot.jpg"
-MODEL_ID = "swarmkeypoint/1"
+MODEL_ID = "robot-location-and-orientation/1"
 APIKEY = "CnyYmNzp3FktcouTB3d5"
-FRAME_WIDTH = 640
-FRAME_HEIGHT = 340
+FRAME_WIDTH = 960
+FRAME_HEIGHT = 540
 
 model = get_model(model_id=MODEL_ID, api_key=APIKEY)
 camera_chariots = {}
