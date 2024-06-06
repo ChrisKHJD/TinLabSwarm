@@ -1,3 +1,34 @@
+"""
+Robot Controller Script for Raspberry Pi Pico W
+
+This script is designed to control a robot using a Raspberry Pi Pico W. 
+It connects to a Wi-Fi network, establishes a socket connection to send and receive data, 
+and provides a web interface for user interaction. The robot can perform various actions 
+such as moving forward, backward, rotating, and stopping. Additionally, it can control 
+LEDs and handle emergency stop commands.
+
+Key Components:
+- Constants: Defines pin numbers, network credentials, and PWM settings.
+- RobotController Class: Manages the robot's movements, LED controls, network connection, 
+  and web server.
+- Main Loop: Periodically sends data to a server and processes incoming commands.
+
+Functionality:
+1. LED Control: Turn on/off front and back LEDs, and blink LEDs for emergency stops.
+2. Movement Control: Move forward, backward, turn left, right, and stop the robot.
+3. Network Communication: Connect to a specified Wi-Fi network and communicate with a server.
+4. Web Interface: Provides a simple HTML page to control the robot via HTTP requests.
+5. Emergency Handling: Immediate stop and LED blink in case of an emergency.
+
+Usage:
+- Configure the constants as needed (e.g., Wi-Fi credentials, IP address).
+- Create a RobotController instance and call the `connect_wifi()` method to connect to Wi-Fi.
+- Use the `main_loop()` method to start the robot's operation, periodically sending and receiving data.
+- Optionally, call `serve_requests()` to start the web server for remote control.
+
+"""
+
+
 import socket
 import network
 import time
@@ -69,6 +100,7 @@ class RobotController:
                 <button onclick="sendRequest('/?PRESS_7=TURN_RIGHT')">Turn Right</button>
                 <button onclick="sendRequest('/?PRESS_8=STOP')">Stop</button>
                 <button onclick="sendRequest('/?PRESS_9=TEST')">Test</button>
+                <button onclick="sendRequest('/?PRESS_10=EMERGENCY_STOP')">Emergency Stop</button>
                 <script>
                     function sendRequest(url) {
                         var xhr = new XMLHttpRequest();
@@ -278,11 +310,14 @@ class RobotController:
                         self.turn_right()
                         found = True
                     if b"/?PRESS_8=STOP" in line:
-                        self.emergency_stop()
+                        self.stop()
                         found = True
                     if b"/?PRESS_9=TEST" in line:
                         self.test_move()
                         found = True
+                    if b"/?PRESS_10=EMEGENCY_STOP" in line:
+                        self.emergency_stop()
+                        True
 
             response = "HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n" + self.html_page
             client.send(response)
