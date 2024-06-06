@@ -20,18 +20,18 @@ SCK_PIN = 18
 CS_PIN = 17
 
 SSID = b'tesla iot' 
-PASSWORD = b'fsL6HgjN' 
+PASSWORD = b'fsL6HgjN'
 PORT = 8000
-IP_ADDRESS = "145.137.55.132" # 145.24.223.115, temp: 145.137.55.132
+IP_ADDRESS = "145.137.54.68" # 145.24.223.115, temp: 145.137.55.132
 TIMEOUT_VALUE = 0.1
 
-# PWM Frequencies and Duty Cycles
-PWM_FREQUENCY = 50
+# PWM Frequencies and Duty Cycles 
+PWM_FREQUENCY = 50 
 DUTY_CYCLE_STOP = 0
-DUTY_CYCLE_FORWARD_LEFT = 6000
-DUTY_CYCLE_FORWARD_RIGHT = 3050
-DUTY_CYCLE_BACKWARD_LEFT = 3000
-DUTY_CYCLE_BACKWARD_RIGHT = 7000
+DUTY_CYCLE_FORWARD_LEFT = 5150 # 5050 6050  5150
+DUTY_CYCLE_FORWARD_RIGHT = 4550 # 4450 3050  4550
+DUTY_CYCLE_BACKWARD_LEFT = 4550 # 4450 3000  4550
+DUTY_CYCLE_BACKWARD_RIGHT = 5150 # 5050 7000 5150 
 
 class RobotController:
     def __init__(self):
@@ -44,9 +44,10 @@ class RobotController:
             "move": self.test_move,
             "move_forward": self.move_forward,
             "move_backward": self.move_backward,
-            "turn_left": self.turn_left,
-            "turn_right": self.turn_right,
-            "stop": self.emergency_stop,
+            "rotate_left": self.turn_left,
+            "rotate_right": self.turn_right,
+            "stop": self.stop,
+            "emergency_stop":self.emergency_stop,
             "led_blink": self.blink_leds,
             "led_on": self.turn_led_on,
             "led_off": self.turn_led_off
@@ -82,7 +83,10 @@ class RobotController:
     def setup_pins(self):
         self.built_in_led = Pin(BUILT_IN_LED_PIN, Pin.OUT)
         self.fled = Pin(FLED_PIN, Pin.OUT)
-        self.bled = Pin(BLED_PIN, Pin.OUT) 
+        self.bled = Pin(BLED_PIN, Pin.OUT)
+        self.turn_led_on(FLED_PIN)  # Ensure front LED is on
+        self.turn_led_on(BLED_PIN)  # Ensure back LED is on
+        self.turn_led_on(BUILT_IN_LED_PIN)  # Ensure built-in LED is on
 
     def setup_servos(self):
         self.LeftMotor = PWM(Pin(PWM_LM_PIN))
@@ -97,13 +101,19 @@ class RobotController:
         self.wlan = network.WLAN(network.STA_IF)
         self.wlan.active(True)
         
-    def blink_leds(self, times=5, interval=0.5):    
+    def blink_leds(self, times=5, interval=0.5):
+        initial_fled_state = self.fled.value()
+        initial_bled_state = self.bled.value()
+        
         for _ in range(times):
             self.fled.value(not self.fled.value())
             self.bled.value(not self.bled.value())
             time.sleep(interval)
             print(f"Blinking LEDs on pins {self.fled} and {self.bled}")
-
+        
+        # Restore the initial state of the LEDs
+        self.fled.value(initial_fled_state)
+        self.bled.value(initial_bled_state)
 
     def turn_led_on(self, pin=BUILT_IN_LED_PIN):
         led = Pin(pin, Pin.OUT)
@@ -113,13 +123,18 @@ class RobotController:
     def turn_led_off(self, pin=BUILT_IN_LED_PIN):
         led = Pin(pin, Pin.OUT)
         led.value(False)
-        print(f"LED on pin {pin} is now OFF")
+        print(f"LED on pin {pin} is now OFF")  
 
     def emergency_stop(self):
         self.LeftMotor.duty_u16(DUTY_CYCLE_STOP)
         self.RightMotor.duty_u16(DUTY_CYCLE_STOP)
         self.blink_leds(BUILT_IN_LED_PIN)
         print("Emergency Stop")
+    
+    def stop(self):
+        self.LeftMotor.duty_u16(5000)
+        self.RightMotor.duty_u16(5000)
+        print("Stop")
 
     def move_forward(self):
         self.LeftMotor.duty_u16(DUTY_CYCLE_FORWARD_LEFT)
@@ -291,8 +306,8 @@ class RobotController:
 def main():
     robot = RobotController()
     robot.connect_wifi()
-    robot.main_loop()
-    # robot.serve_requests() # Voor Het Testen
+    # robot.serve_requests()
+    robot.main_loop() 
 
 if __name__ == "__main__":
     main()
