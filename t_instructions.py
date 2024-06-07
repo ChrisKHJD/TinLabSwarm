@@ -62,7 +62,7 @@ def chariot_instructions():
             instr = get_instruction(chariot, target_x, target_y, real_x, real_y, orientation)
             print('instruction send:', chariot, instr)
 
-        sleep(3)
+        sleep(10)
 
 print("------------------------------------------------------")
 chariot_instructions()
