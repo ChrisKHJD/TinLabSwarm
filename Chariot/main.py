@@ -28,29 +28,6 @@ Usage:
 
 """
 
-
-import socket
-import network
-import time
-from machine import Pin, PWM
-import json
-from time import sleep
-
-# Constants
-BUILT_IN_LED_PIN = 25
-FLED_PIN = 20
-BLED_PIN = 21
-PWM_LM_PIN = 6
-PWM_RM_PIN = 7
-PWM_SC_PIN = 10
-SDA_PIN = 4
-SCL_PIN = 5
-MISO_PIN = 16
-MOSI_PIN = 19 
-SCK_PIN = 18
-CS_PIN = 17
-
-SSID = b'tesla iot' import socket
 import network
 import time
 from machine import Pin, PWM
