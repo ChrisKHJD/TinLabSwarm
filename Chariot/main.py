@@ -50,19 +50,43 @@ MOSI_PIN = 19
 SCK_PIN = 18
 CS_PIN = 17
 
-SSID = b'tesla iot' 
-PASSWORD = b'fsL6HgjN'
+SSID = b'tesla iot' import socket
+import network
+import time
+from machine import Pin, PWM
+import json
+from time import sleep
+import ubinascii
+
+# Constants
+BUILT_IN_LED_PIN = 25
+FLED_PIN = 20
+BLED_PIN = 21
+PWM_LM_PIN = 6
+PWM_RM_PIN = 7
+PWM_SC_PIN = 10
+SDA_PIN = 4
+SCL_PIN = 5
+MISO_PIN = 16
+MOSI_PIN = 19 
+SCK_PIN = 18
+CS_PIN = 17  
+
+SSID = b'iotroam' # tesla iot, 
+PASSWORD = b'Robot!!/#' # fsL6HgjN, 
 PORT = 8000
-IP_ADDRESS = "145.137.54.68" # 145.24.223.115, temp: 145.137.55.132
-TIMEOUT_VALUE = 0.1
+IP_ADDRESS = "145.24.243.10" # 145.24.223.115, temp: 145.137.55.132
+TIMEOUT_VALUE = 0.1 
 
 # PWM Frequencies and Duty Cycles 
 PWM_FREQUENCY = 50 
-DUTY_CYCLE_STOP = 0
-DUTY_CYCLE_FORWARD_LEFT = 5150 # 5050 6050  5150
-DUTY_CYCLE_FORWARD_RIGHT = 4550 # 4450 3050  4550
-DUTY_CYCLE_BACKWARD_LEFT = 4550 # 4450 3000  4550
-DUTY_CYCLE_BACKWARD_RIGHT = 5150 # 5050 7000 5150 
+DUTY_CYCLE_STOP = 0 
+DUTY_CYCLE_FORWARD_LEFT = 5100  # 5050 6050  5150 Black:5100 , Red:5100 , Blue: ,
+DUTY_CYCLE_FORWARD_RIGHT = 4525 # 4450 3050  4550 Black:4525 , Red:4516 , Blue: ,
+DUTY_CYCLE_BACKWARD_LEFT = 4525 # 4450 3000  4550 Black:4525 , Red:4516 , Blue: ,
+DUTY_CYCLE_BACKWARD_RIGHT = 5150 # 5050 7000 5150 Black:5150 , Red:5100 , Blue: ,
+
+
 
 class RobotController:
     def __init__(self):
@@ -100,7 +124,6 @@ class RobotController:
                 <button onclick="sendRequest('/?PRESS_7=TURN_RIGHT')">Turn Right</button>
                 <button onclick="sendRequest('/?PRESS_8=STOP')">Stop</button>
                 <button onclick="sendRequest('/?PRESS_9=TEST')">Test</button>
-                <button onclick="sendRequest('/?PRESS_10=EMERGENCY_STOP')">Emergency Stop</button>
                 <script>
                     function sendRequest(url) {
                         var xhr = new XMLHttpRequest();
@@ -165,7 +188,7 @@ class RobotController:
     
     def stop(self):
         self.LeftMotor.duty_u16(5000)
-        self.RightMotor.duty_u16(5000)
+        self.RightMotor.duty_u16(4950) # Zwart-Chariot: 4950, Blue- Chariot 
         print("Stop")
 
     def move_forward(self):
@@ -190,24 +213,24 @@ class RobotController:
 
     def test_move(self):
         self.move_forward()
-        time.sleep(1)
-        self.emergency_stop()
-        time.sleep(1)
+        time.sleep(2)
+        self.stop()
+        time.sleep(2)
         self.turn_left()
-        time.sleep(1)
-        self.emergency_stop()
-        time.sleep(1)
+        time.sleep(2)
+        self.stop()
+        time.sleep(2)
         self.turn_right()
-        time.sleep(1)
-        self.emergency_stop()
-        time.sleep(1)
+        time.sleep()
+        self.stop()
+        time.sleep(0.5)
         self.move_forward()
-        time.sleep(3)
-        self.emergency_stop()
-        time.sleep(1)
+        time.sleep(0.5)
+        self.stop()
+        time.sleep(0.5)
         self.move_backward()
-        time.sleep(3)
-        self.emergency_stop()
+        time.sleep(0.5)
+        self.stop()
         print("Test Move Completed")
 
     def send_data(self):
@@ -310,14 +333,11 @@ class RobotController:
                         self.turn_right()
                         found = True
                     if b"/?PRESS_8=STOP" in line:
-                        self.stop()
+                        self.emergency_stop()
                         found = True
                     if b"/?PRESS_9=TEST" in line:
                         self.test_move()
                         found = True
-                    if b"/?PRESS_10=EMEGENCY_STOP" in line:
-                        self.emergency_stop()
-                        True
 
             response = "HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n" + self.html_page
             client.send(response)
@@ -338,12 +358,29 @@ class RobotController:
 
             sleep(0.5)
 
+def get_mac_address():
+    wlan = network.WLAN(network.STA_IF)  # Get WLAN interface object
+    wlan.active(True)  # Activate WLAN interface
+    mac_address = wlan.config('mac')  # Get MAC address
+    mac = ubinascii.hexlify(network.WLAN().config('mac'),':').decode()
+    return mac_address, mac
+
+        
+
+
 def main():
     robot = RobotController()
     robot.connect_wifi()
-    # robot.serve_requests()
-    robot.main_loop() 
+    #robot.serve_requests()
+    robot.main_loop()
+    
+    #robot.move_forward()
+    #robot.move_backward()
+    #robot.test_move()
+    
+    # Call the function to get and print the MAC address
+    #print("MAC Address:", get_mac_address())
+    
 
 if __name__ == "__main__":
     main()
-
