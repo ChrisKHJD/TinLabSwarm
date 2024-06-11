@@ -14,6 +14,7 @@ from newRobotTracking import getchariots, camera_view
 # PORT = 8000
 HOST = "145.24.243.10"
 PORT = 8000
+lock = threading.Lock()  # For synchronizing access to shared data
 
 clientCount = 0
 
@@ -82,65 +83,67 @@ def chariot_instructions():
         if webots:
             print(f"print all chariots: {chariots}")
 
-            for chariot in chariots:
+            for chariot_id in chariots:
                 try:
-                    client_socket = connectedClients[chariot]["client_socket"]
+                    with lock:
+                        client_socket = connectedClients[chariot_id]["client_socket"]
 
-                    # add camera and pathplanning code here
-                    real_x, real_y, orientation = chariots[chariot]["coordinate"]
-                    target_x = webots[str(chariots[chariot]["camera_id"])]["x"]
-                    target_y = webots[str(chariots[chariot]["camera_id"])]["y"]
+                        real_x, real_y, orientation = chariots[chariot_id]["coordinate"]
+                        target_x = webots[str(chariots[chariot_id]["camera_id"])]["x"]
+                        target_y = webots[str(chariots[chariot_id]["camera_id"])]["y"]
 
-                    instr = get_instruction(chariots[chariot]["camera_id"], target_x, target_y, real_x, real_y, orientation)
+                        instr = get_instruction(chariots[chariot_id]["camera_id"], target_x, target_y, real_x, real_y, orientation)
 
-                    if not "instr" in chariots[chariot].keys() or chariots[chariot]["instr"] != instr:
-                        chariots[chariot]["instr"] = instr
+                        if not "instr" in chariots[chariot_id].keys() or chariots[chariot_id]["instr"] != instr:
+                            chariots[chariot_id]["instr"] = instr
 
-                        payload_send = {
-                            "instruction": instr
-                            # "instruction": "turn_left"  #instr
-                            # "instruction": "turn_right"
-                            # "instruction": "move"
-                            # "instruction": "stop"
-                            # "instruction": "led_on"
-                        }
+                            payload_send = {
+                                "instruction": instr
+                                # "instruction": "turn_left"  #instr
+                                # "instruction": "turn_right"
+                                # "instruction": "move"
+                                # "instruction": "stop"
+                                # "instruction": "led_on"
+                            }
 
-                        try:
-                            # stuur je alle instructies naar alle robots? de robot zelf weet niet welk id die heeft?
-                            client_socket.sendall(json.dumps(payload_send).encode("ascii"))
-                            printings = chariots[chariot]["camera_id"]
+                            try:
+                                client_socket.sendall(json.dumps(payload_send).encode("ascii"))
+                                printings = chariots[chariot_id]["camera_id"]
 
-                            if instr == "move_forward":
-                                print(f"{printings}, \t instruction send: {Fore.GREEN}{payload_send}{Style.RESET_ALL}")
-                            elif instr == "rotate_left":
-                                print(f"{printings}, \t instruction send: {Fore.YELLOW}{payload_send}{Style.RESET_ALL}")
-                            elif instr == "rotate_right":
-                                print(f"{printings}, \t instruction send: {Fore.BLUE}{payload_send}{Style.RESET_ALL}")
-                            elif instr == "stop":
-                                print(f"{printings}, \t instruction send: {Fore.RED}{payload_send}{Style.RESET_ALL}")
+                                if instr == "move_forward":
+                                    print(f"{printings}, \t instruction send: {Fore.GREEN}{payload_send}{Style.RESET_ALL}")
+                                elif instr == "rotate_left":
+                                    print(f"{printings}, \t instruction send: {Fore.YELLOW}{payload_send}{Style.RESET_ALL}")
+                                elif instr == "rotate_right":
+                                    print(f"{printings}, \t instruction send: {Fore.BLUE}{payload_send}{Style.RESET_ALL}")
+                                elif instr == "stop":
+                                    print(f"{printings}, \t instruction send: {Fore.RED}{payload_send}{Style.RESET_ALL}")
 
-                        except:
-                            print(f"nothing sent, connection lost with {chariot}")
-                            chariots.pop(chariot)
-                            connectedClients.pop(chariot)
+                            except:
+                                print(f"nothing sent, connection lost with {chariot_id}")
+                                chariots.pop(chariot_id)
+                                connectedClients.pop(chariot_id)
 
-                            clientCount -= 1
-                            print(clientCount, " clients connected")
-                            break
+                                clientCount -= 1
+                                print(clientCount, " clients connected")
+                                break
                 except Exception as e:
-                    print(f"chariot_instructions something went wrong {chariot} {e}")
+                    print(f"chariot_instructions something went wrong {chariot_id} {e}")
         sleep(0.5)
 
 
 def camera():
     global chariots, webots
 
-    while True:        
+    while True:
+        #process frame and get chariots
         chariot_coordinates = getchariots()
 
-        if chariots:
-            for chariot in sorted(chariots.keys()):
-                chariots[chariot]["coordinate"] = chariot_coordinates[chariots[chariot]["camera_id"]]
+        with lock:
+            if chariots:
+                for chariot_id in sorted(chariots.keys()):
+                    chariots[chariot_id]["coordinate"] = chariot_coordinates[chariots[chariot_id]["camera_id"]]
+        # means fetching 10 frames each second
         sleep(0.1)
 
 def receiving(client_socket, client_address, client_id):
@@ -150,18 +153,21 @@ def receiving(client_socket, client_address, client_id):
         # print(f"{client_id}, trying to receive")
 
         try:
-            payload_json =  json.loads(client_socket.recv(1024).decode())
-
-            if payload_json["type"] == "chariot":
-                chariots[client_id] = payload_json
-                chariots[client_id]["camera_id"] = len(chariots) - 1
-                print("succes")
-                return
+            payload_json = json.loads(client_socket.recv(1024).decode())
+            with lock:
+                if payload_json["type"] == "chariot":
+                    chariots[client_id] = payload_json
+                    chariots[client_id]["camera_id"] = len(chariots) - 1
+                    print("succes")
+                    return
             
-            webots = payload_json
-            print(payload_json)
-        except BaseException as e:
-            print(f"{client_id}, something went wrong, {e}")
+                webots = payload_json
+                print(payload_json)
+        except json.JSONDecodeError as e:
+            print(f"{client_id}, JSON decode error, {e}")
+            return
+        except socket.error as e:
+            print(f"{client_id}, socket error, {e}")
             return
         except:
             print(f"{client_id}, no data received")
@@ -201,10 +207,11 @@ def main():
         while id in connectedClients:
             id = randint(1, 100)
 
-        connectedClients[id] = {
-            "client_socket": client_socket,
-            "client_address": client_address
-        }
+        with lock:
+            connectedClients[id] = {
+                "client_socket": client_socket,
+                "client_address": client_address
+            }
 
         t = threading.Thread(
             target=receiving,

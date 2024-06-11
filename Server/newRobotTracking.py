@@ -53,7 +53,7 @@ def infer_frame(frame):
 
 
 def update_chariots(x, y, angle):
-    global camera_chariots
+    global camera_chariots, amount_robots_seen
     if len(camera_chariots) < amount_robots_seen:
         camera_chariots[len(camera_chariots)] = (x, y, angle)
     else:
@@ -84,29 +84,15 @@ def process_inference(frame, data):
         for prediction in element["predictions"]:
             x = int(prediction["x"])
             y = int(prediction["y"])
-            width = int(prediction["width"])
-            height = int(prediction["height"])
-
-            x1 = int(x - (width / 2))
-            y1 = int(y - (height / 2))
-            x2 = int(x + (width / 2))
-            y2 = int(y + (height / 2))
-
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
             for keypoint in prediction["keypoints"]:
                 keypoint_x = int(keypoint["x"])
                 keypoint_y = int(keypoint["y"])
                 class_name = keypoint["class_name"]
                 if class_name == "top":
-                    color = (0, 0, 255)
                     top_x, top_y = keypoint_x, keypoint_y
                 elif class_name == "bottom":
-                    color = (255, 0, 0)
                     bottom_x, bottom_y = keypoint_x, keypoint_y
-                else:
-                    color = (0, 255, 0)
-                cv2.circle(frame, (keypoint_x, keypoint_y), 5, color, -1)
 
             # Calculate the angle between top and bottom keypoints
             angle = calculate_angle(top_x, top_y, bottom_x, bottom_y)
@@ -115,44 +101,6 @@ def process_inference(frame, data):
 
     return frame
 
-
-# not used
-def process_inference_noview(data):
-    global amount_robots_seen
-    if data is None:
-        print("no data")
-        return None
-
-    # Since there is always only one element in data
-    for element in data:
-        amount_robots_seen = 0
-        for prediction in element["predictions"]:
-            x = int(prediction["x"])
-            y = int(prediction["y"])
-            amount_robots_seen += 1
-            top_x, top_y, bottom_x, bottom_y = None, None, None, None
-
-            for keypoint in prediction["keypoints"]:
-                keypoint_x = int(keypoint["x"])
-                keypoint_y = int(keypoint["y"])
-                class_name = keypoint["class_name"]
-
-                if class_name == "top":
-                    top_x, top_y = keypoint_x, keypoint_y
-                elif class_name == "bottom":
-                    bottom_x, bottom_y = keypoint_x, keypoint_y
-
-            if (
-                    top_x is not None
-                    and top_y is not None
-                    and bottom_x is not None
-                    and bottom_y is not None
-            ):
-                # Calculate the angle between top and bottom keypoints
-                angle = calculate_angle(bottom_x, bottom_y, top_x, top_y)
-
-                # Update chariots with the calculated angle
-                update_chariots(x, y, angle)
 
 
 processed_frame = None
