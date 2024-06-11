@@ -133,18 +133,14 @@ def chariot_instructions():
 
 
 def camera():
-    global chariots
+    global chariots, webots
 
     while True:        
         chariot_coordinates = getchariots()
 
-        if chariots and len(chariots) <= len(chariot_coordinates):
-            i = 0
-
-            for chariot in chariots:
-                chariots[chariot]["coordinate"] = chariot_coordinates[i]
-                chariots[chariot]["camera_id"] = i
-                i += 1
+        if chariots:
+            for chariot in sorted(chariots.keys()):
+                chariots[chariot]["coordinate"] = chariot_coordinates[chariots[chariot]["camera_id"]]
         sleep(0.1)
 
 def receiving(client_socket, client_address, client_id):
@@ -158,6 +154,7 @@ def receiving(client_socket, client_address, client_id):
 
             if payload_json["type"] == "chariot":
                 chariots[client_id] = payload_json
+                chariots[client_id]["camera_id"] = len(chariots) - 1
                 print("succes")
                 return
             
@@ -196,7 +193,7 @@ def main():
     while True:
         client_socket, client_address = s.accept()
         clientCount += 1
-        print("connection accepted from ", client_address)
+        print(f"connection accepted from {client_address}, ")
 
 
         id = randint(0,100)
