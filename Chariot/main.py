@@ -58,10 +58,10 @@ TIMEOUT_VALUE = 0.1
 # PWM Frequencies and Duty Cycles 
 PWM_FREQUENCY = 50 
 DUTY_CYCLE_STOP = 0 
-DUTY_CYCLE_FORWARD_LEFT = 5100  # 5050 6050  5150 Black:5100 , Red:5100 , Blue: ,
-DUTY_CYCLE_FORWARD_RIGHT = 4525 # 4450 3050  4550 Black:4525 , Red:4516 , Blue: ,
-DUTY_CYCLE_BACKWARD_LEFT = 4525 # 4450 3000  4550 Black:4525 , Red:4516 , Blue: ,
-DUTY_CYCLE_BACKWARD_RIGHT = 5150 # 5050 7000 5150 Black:5150 , Red:5100 , Blue: ,
+DUTY_CYCLE_FORWARD_LEFT = 5100  # 5050 6050  5150 |Black:5100  |Red:5100  |Blue:5290 
+DUTY_CYCLE_FORWARD_RIGHT = 4516 # 4450 3050  4550 |Black:4525  |Red:4516  |Blue:5130 
+DUTY_CYCLE_BACKWARD_LEFT = 4516 # 4450 3000  4550 |Black:4525  |Red:4516  |Blue:4450 
+DUTY_CYCLE_BACKWARD_RIGHT = 5100 # 5050 7000 5150 |Black:5150  |Red:5100  |Blue:4530 
 
 
 
@@ -164,8 +164,8 @@ class RobotController:
         print("Emergency Stop")
     
     def stop(self):
-        self.LeftMotor.duty_u16(5000)
-        self.RightMotor.duty_u16(4950) # Zwart-Chariot: 4950, Blue- Chariot 
+        self.LeftMotor.duty_u16(5000) # Zwart-Chariot: 5000, Red-Chariot: 5000, Blue-Chariot: 4920 (Verschil:160)
+        self.RightMotor.duty_u16(5000) # Zwart-Chariot: 4950(Verschil 50), Red-Chariot: 5000, Blue-Chariot:5000 
         print("Stop")
 
     def move_forward(self):
@@ -207,7 +207,7 @@ class RobotController:
         time.sleep(0.5)
         self.move_backward()
         time.sleep(0.5)
-        self.stop()
+        self.emergency_stop()
         print("Test Move Completed")
 
     def send_data(self):
@@ -351,6 +351,7 @@ def main():
     #robot.serve_requests()
     robot.main_loop()
     
+    # Test Robot Movement Funcitons
     #robot.move_forward()
     #robot.move_backward()
     #robot.test_move()
