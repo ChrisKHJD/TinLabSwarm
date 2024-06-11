@@ -61,7 +61,7 @@ def distance(x1, y1, x2, y2):
 def get_instruction(robot_id, target_x, target_y, real_x, real_y, orientation, threshold=20):
     instruction = ""
     angle_diff = angle_to_target(real_x, real_y, target_x, target_y, orientation)
-    print(f"{Fore.CYAN}angle_diff: {angle_diff}{Style.RESET_ALL}, {Fore.WHITE}orientation: {orientation}{Style.RESET_ALL}, {Fore.MAGENTA}distance: {distance(real_x, real_y, target_x, target_y)}{Style.RESET_ALL}")
+    print(f"{robot_id}: {Fore.CYAN}angle_diff: {angle_diff}{Style.RESET_ALL}, {Fore.WHITE}orientation: {orientation}{Style.RESET_ALL}, {Fore.MAGENTA}distance: {distance(real_x, real_y, target_x, target_y)}{Style.RESET_ALL}")
 
     if distance(real_x, real_y, target_x, target_y) <= threshold:
         instruction = 'stop'

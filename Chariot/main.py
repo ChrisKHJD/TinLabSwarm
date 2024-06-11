@@ -198,16 +198,16 @@ class RobotController:
         self.stop()
         time.sleep(2)
         self.turn_right()
-        time.sleep()
+        time.sleep(2)
         self.stop()
-        time.sleep(0.5)
+        time.sleep(2)
         self.move_forward()
-        time.sleep(0.5)
+        time.sleep(2)
         self.stop()
-        time.sleep(0.5)
+        time.sleep(2)
         self.move_backward()
         time.sleep(0.5)
-        self.emergency_stop()
+        self.stop()
         print("Test Move Completed")
 
     def send_data(self):
@@ -347,11 +347,10 @@ def get_mac_address():
 
 def main():
     robot = RobotController()
-    robot.connect_wifi()
+    #robot.connect_wifi()
     #robot.serve_requests()
-    robot.main_loop()
+    #robot.main_loop()
     
-    # Test Robot Movement Funcitons
     #robot.move_forward()
     #robot.move_backward()
     #robot.test_move()
