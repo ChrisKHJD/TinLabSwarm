@@ -7,15 +7,11 @@ from datetime import datetime
 from time import sleep
 
 webots = {
-    0: (15, 20),  # Target position for robot_1
-    1: (25, 30),  # Target position for robot_2
-    2: (5, 15),  # Target position for robot_3
+    0: (50, 50),  # Target position for robot_1
 }
 
 chariots = {
-    0: (10, 10, 30),  # Real position and orientation for robot_1
-    1: (20, 25, 60),  # Real position and orientation for robot_2
-    2: (2, 10, 90),  # Real position and orientation for robot_3
+    0: (0, 50, 0),  # Real position and orientation for robot_1
 }
 
 
@@ -39,7 +35,9 @@ def get_instruction(robot_id, target_x, target_y, real_x, real_y, orientation, t
     instruction = ""
 
     target_angle = calculate_angle(real_x, real_y, target_x, target_y)
+    print("target angle",target_angle)
     angle_diff = angle_difference(target_angle, orientation)
+    print("angle dif", angle_diff)
 
     if distance(real_x, real_y, target_x, target_y) <= threshold:
         instruction = 'stop'
@@ -58,13 +56,13 @@ def chariot_instructions():
 
     while True:
         for chariot in chariots:
-            print(chariots[chariot])
+            #print(chariots[chariot])
             real_x, real_y, orientation = chariots[chariot]
             target_x, target_y = webots[chariot]
             instr = get_instruction(chariot, target_x, target_y, real_x, real_y, orientation)
-            print(time.time(), 'instruction send:', chariot, instr)
+            print('instruction send:', chariot, instr)
 
-        sleep(3)
+        sleep(10)
 
-
+print("------------------------------------------------------")
 chariot_instructions()

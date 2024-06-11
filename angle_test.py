@@ -140,7 +140,7 @@ def process_inference_noview(data):
         for prediction in element["predictions"]:
             x = int(prediction["x"])
             y = int(prediction["y"])
-            amount_robots_seen+= 1
+            amount_robots_seen += 1
             top_x, top_y, bottom_x, bottom_y = None, None, None, None
 
             for keypoint in prediction["keypoints"]:
@@ -164,17 +164,17 @@ def process_inference_noview(data):
 
                 # Update chariots with the calculated angle
                 update_chariots(x, y, angle)
-    
+
+
 processed_frame = None
 
 
 def getchariots():
     global processed_frame
-    
+
     frame = fetch_frame()
 
     data = infer_frame(frame)
-
 
     # for with view
     processed_frame = process_inference(frame, data)
@@ -184,6 +184,7 @@ def getchariots():
     # print(f"camera detected chariots: {camera_chariots}")
 
     return camera_chariots
+
 
 def camera_view():
     global processed_frame
@@ -196,6 +197,14 @@ def camera_view():
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
         sleep(1)
+
+
+def calculate_angle(x1, y1, x2, y2):
+    calculated_angle = math.degrees(math.cos(y2 - y1, x2 - x1))
+    # if calculated_angle < 0:
+    #     return 360 + calculated_angle
+    # else:
+    return calculated_angle
 
 
 def main():
@@ -216,6 +225,15 @@ def main():
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
+
+        target_angle = calculate_angle(
+            camera_chariots[0][0],
+            camera_chariots[0][1],
+            camera_chariots[1][0],
+            camera_chariots[1][1],
+        )
+
+        print(f"target angle: {target_angle}")
 
     cv2.destroyAllWindows()
 

@@ -6,12 +6,13 @@ import time
 from datetime import datetime
 from time import sleep
 from random import randint
+from colorama import Fore, Style
 
-from RobotTrackingCamera import getchariots, camera_view
+from newRobotTracking import getchariots, camera_view
 
 # HOST = "145.24.223.115"
 # PORT = 8000
-HOST = "145.137.55.132"
+HOST = "145.24.243.10"
 PORT = 8000
 
 clientCount = 0
@@ -35,13 +36,20 @@ chariots = {} #id, location, direction, last message time
 
 
 # Calculate the angle between two points.
-def calculate_angle(x1, y1, x2, y2):
-    return math.degrees(math.atan2(y2 - y1, x2 - x1))
+def angle_to_target(front_x, front_y, target_x, target_y, orientation):
+    target_angle = math.degrees(math.atan2(target_y - front_y, target_x - front_x))
+    angle_diff = target_angle - orientation
+    return (angle_diff + 180) % 360 - 180  # normalize to [-180, 180]
 
 
 # Calculate the smallest difference between two angles.
 def angle_difference(angle1, angle2):
-    return (angle1 - angle2 + 180) % 360 - 180
+    difference = (angle1 - angle2 + 180) % 360 - 180
+    if difference < -180:
+        difference += 360
+    elif difference > 180:
+        difference -= 360
+    return difference
 
 
 # Calculate the Euclidean distance between two points.
@@ -52,9 +60,8 @@ def distance(x1, y1, x2, y2):
 # Generate movement instructions for robot to reach target. test threshold value
 def get_instruction(robot_id, target_x, target_y, real_x, real_y, orientation, threshold=20):
     instruction = ""
-
-    target_angle = calculate_angle(real_x, real_y, target_x, target_y)
-    angle_diff = angle_difference(target_angle, orientation)
+    angle_diff = angle_to_target(real_x, real_y, target_x, target_y, orientation)
+    print(f"{Fore.CYAN}angle_diff: {angle_diff}{Style.RESET_ALL}, {Fore.WHITE}orientation: {orientation}{Style.RESET_ALL}, {Fore.MAGENTA}distance: {distance(real_x, real_y, target_x, target_y)}{Style.RESET_ALL}")
 
     if distance(real_x, real_y, target_x, target_y) <= threshold:
         instruction = 'stop'
@@ -71,11 +78,10 @@ def get_instruction(robot_id, target_x, target_y, real_x, real_y, orientation, t
 def chariot_instructions():
     global chariots, webots, connectedClients, clientCount
 
-    run = True
-
     while True:
-        while len(chariots) > 2 and run:
-            print(chariots)
+        if webots:
+            print(f"print all chariots: {chariots}")
+
             for chariot in chariots:
                 try:
                     client_socket = connectedClients[chariot]["client_socket"]
@@ -98,9 +104,18 @@ def chariot_instructions():
 
                     try:
                         # stuur je alle instructies naar alle robots? de robot zelf weet niet welk id die heeft?
-                        # client_socket.sendall(json.dumps(payload_send).encode("ascii"))
-                        pffft = chariots[chariot]
-                        print(f"{pffft}, instruction send: {payload_send}")
+                        client_socket.sendall(json.dumps(payload_send).encode("ascii"))
+                        chariot_print = chariots[chariot]["camera_id"]
+
+                        if instr == "move_forward":
+                            print(f"{chariot_print}, instruction send: {Fore.GREEN}{payload_send}{Style.RESET_ALL}, time: {datetime.now()}")
+                        elif instr == "rotate_left":
+                            print(f"{chariot_print}, instruction send: {Fore.YELLOW}{payload_send}{Style.RESET_ALL}, time: {datetime.now()}")
+                        elif instr == "rotate_right":
+                            print(f"{chariot_print}, instruction send: {Fore.BLUE}{payload_send}{Style.RESET_ALL}, time: {datetime.now()}")
+                        elif instr == "stop":
+                            print(f"{chariot_print}, instruction send: {Fore.RED}{payload_send}{Style.RESET_ALL}, time: {datetime.now()}")
+
                     except:
                         print(f"nothing sent, connection lost with {chariot}")
                         chariots.pop(chariot)
@@ -111,9 +126,7 @@ def chariot_instructions():
                         break
                 except Exception as e:
                     print(f"chariot_instructions something went wrong {chariot} {e}")
-                
-            run = False
-            sleep(0.5)
+        sleep(0.5)
 
 
 def camera():
@@ -153,7 +166,7 @@ def receiving(client_socket, client_address, client_id):
         except:
             print(f"{client_id}, no data received")
 
-        sleep(0.1)
+        sleep(0.05)
 
 
 def main():
@@ -171,7 +184,7 @@ def main():
         target=camera,
         args=(),
     )
-    # t.start()
+    t.start()
 
     print(f"start server on: {HOST} {PORT}")
     s = socket.create_server((HOST, PORT))
@@ -204,6 +217,5 @@ def main():
         t.start()
 
         print(clientCount, " clients connected")
-
 
 main()

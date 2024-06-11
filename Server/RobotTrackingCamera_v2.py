@@ -7,7 +7,7 @@ import imutils
 from inference import get_model
 from time import sleep
 
-CAMERA_URL = "http://145.137.117.192:8080//shot.jpg"
+CAMERA_URL = "http://145.24.238.54:8080//shot.jpg"
 MODEL_ID = "robot-location-and-orientation/1"
 APIKEY = "CnyYmNzp3FktcouTB3d5"
 FRAME_WIDTH = 960
@@ -28,11 +28,10 @@ def calculate_angle(x1, y1, x2, y2):
     angle_deg = math.degrees(angle_rad)
 
     # Ensure the angle is between 0 and 360 degrees
-    mapped_angle = angle_deg % 360
-    if mapped_angle < 0:
-        mapped_angle += 360  # Ensure angle is positive
-
-    return mapped_angle
+    # if angle_deg < 0:
+    #     angle_deg += 360
+    
+    return angle_deg
 
 
 def fetch_frame():

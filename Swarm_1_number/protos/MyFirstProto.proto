@@ -27,7 +27,7 @@ PROTO MyFirstProto [
           metalness 1
         }
         geometry Box {
-          size 0.9 0.9 0.9
+          size 0.7 0.7 0.2
         }
   } ]
     boundingObject USE BODY
