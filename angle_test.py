@@ -7,7 +7,7 @@ import imutils
 from inference import get_model
 from time import sleep
 
-CAMERA_URL = "http://145.24.243.11:8080//shot.jpg"
+CAMERA_URL = "http://145.137.117.192:8080//shot.jpg"
 MODEL_ID = "robot-location-and-orientation/1"
 APIKEY = "CnyYmNzp3FktcouTB3d5"
 FRAME_WIDTH = 960
@@ -18,10 +18,21 @@ camera_chariots = {}
 amount_robots_seen = 0
 
 
-def calculate_angle(front_x, front_y, back_x, back_y):
-    dx = front_x - back_x
-    dy = front_y - back_y
-    return math.degrees(math.atan2(dy, dx))
+def calculate_angle(x1, y1, x2, y2):
+    # Calculate the differences in coordinates
+    delta_x = x1 - x2
+    delta_y = y1 - y2
+
+    # Calculate the angle using arctan2 and convert it to degrees
+    angle_rad = math.atan2(delta_y, delta_x)
+    angle_deg = math.degrees(angle_rad)
+
+    # Ensure the angle is between 0 and 360 degrees
+    mapped_angle = angle_deg % 360
+    if mapped_angle < 0:
+        mapped_angle += 360  # Ensure angle is positive
+
+    return mapped_angle
 
 
 def fetch_frame():
@@ -109,7 +120,7 @@ def process_inference(frame, data):
                 cv2.circle(frame, (keypoint_x, keypoint_y), 5, color, -1)
 
             # Calculate the angle between top and bottom keypoints
-            angle = calculate_angle(top_x, top_y, bottom_x, bottom_y)
+            angle = calculate_angle(bottom_x, bottom_y, top_x, top_y)
 
             update_chariots(x, y, angle)
 
@@ -143,10 +154,10 @@ def process_inference_noview(data):
                     bottom_x, bottom_y = keypoint_x, keypoint_y
 
             if (
-                    top_x is not None
-                    and top_y is not None
-                    and bottom_x is not None
-                    and bottom_y is not None
+                top_x is not None
+                and top_y is not None
+                and bottom_x is not None
+                and bottom_y is not None
             ):
                 # Calculate the angle between top and bottom keypoints
                 angle = calculate_angle(bottom_x, bottom_y, top_x, top_y)
@@ -172,8 +183,6 @@ def getchariots():
     # process_inference_noview(data)
     # print(f"camera detected chariots: {camera_chariots}")
 
-    # print("Camera got frame succesfully")
-
     return camera_chariots
 
 
@@ -188,6 +197,14 @@ def camera_view():
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
         sleep(1)
+
+
+def calculate_angle(x1, y1, x2, y2):
+    calculated_angle = math.degrees(math.cos(y2 - y1, x2 - x1))
+    # if calculated_angle < 0:
+    #     return 360 + calculated_angle
+    # else:
+    return calculated_angle
 
 
 def main():
@@ -208,6 +225,15 @@ def main():
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
+
+        target_angle = calculate_angle(
+            camera_chariots[0][0],
+            camera_chariots[0][1],
+            camera_chariots[1][0],
+            camera_chariots[1][1],
+        )
+
+        print(f"target angle: {target_angle}")
 
     cv2.destroyAllWindows()
 

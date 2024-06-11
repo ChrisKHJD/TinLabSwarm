@@ -6,12 +6,13 @@ import time
 from datetime import datetime
 from time import sleep
 from random import randint
+from colorama import Fore, Style
 
 from RobotTrackingCamera import getchariots, camera_view
 
 # HOST = "145.24.223.115"
 # PORT = 8000
-HOST = "145.137.55.132"
+HOST = "145.137.54.68"
 PORT = 8000
 
 clientCount = 0
@@ -37,10 +38,10 @@ chariots = {} #id, location, direction, last message time
 # Calculate the angle between two points.
 def calculate_angle(x1, y1, x2, y2):
     calculated_angle = math.degrees(math.atan2(y2 - y1, x2 - x1))
-    if calculated_angle < 0:
-        return 360 + calculated_angle
-    else:
-        return calculated_angle
+    # if calculated_angle < 0:
+    #     return 360 + calculated_angle
+    # else:
+    return calculated_angle
 
 
 # Calculate the smallest difference between two angles.
@@ -54,12 +55,13 @@ def distance(x1, y1, x2, y2):
 
 
 # Generate movement instructions for robot to reach target. test threshold value
-def get_instruction(robot_id, target_x, target_y, real_x, real_y, orientation, threshold=20):
+def get_instruction(robot_id, target_x, target_y, real_x, real_y, orientation, threshold=15):
     instruction = ""
 
     target_angle = calculate_angle(real_x, real_y, target_x, target_y)
     angle_diff = angle_difference(target_angle, orientation)
-    print(f"target angle: {target_angle}, orentation: {orientation}")
+    print(f"target angle: {target_angle}, orentation: {orientation}, difference {target_angle - orientation}")
+    print(f"distance from destination {distance(real_x, real_y, target_x, target_y)}")
 
     if distance(real_x, real_y, target_x, target_y) <= threshold:
         instruction = 'stop'
@@ -103,8 +105,17 @@ def chariot_instructions():
                     try:
                         # stuur je alle instructies naar alle robots? de robot zelf weet niet welk id die heeft?
                         client_socket.sendall(json.dumps(payload_send).encode("ascii"))
-                        pffft = chariots[chariot]["camera_id"]
-                        print(f"{pffft}, instruction send: {payload_send}")
+                        chariot_print = chariots[chariot]["camera_id"]
+
+                        if instr == "move_forward":
+                            print(f"{chariot_print}, instruction send: {Fore.GREEN}{payload_send}{Style.RESET_ALL}, time: {datetime.now()}")
+                        elif instr == "rotate_left":
+                            print(f"{chariot_print}, instruction send: {Fore.YELLOW}{payload_send}{Style.RESET_ALL}, time: {datetime.now()}")
+                        elif instr == "rotate_right":
+                            print(f"{chariot_print}, instruction send: {Fore.BLUE}{payload_send}{Style.RESET_ALL}, time: {datetime.now()}")
+                        elif instr == "stop":
+                            print(f"{chariot_print}, instruction send: {Fore.RED}{payload_send}{Style.RESET_ALL}, time: {datetime.now()}")
+
                     except:
                         print(f"nothing sent, connection lost with {chariot}")
                         chariots.pop(chariot)
@@ -131,7 +142,7 @@ def camera():
                 chariots[chariot]["coordinate"] = chariot_coordinates[i]
                 chariots[chariot]["camera_id"] = i
                 i += 1
-        sleep(0.1)
+        # sleep(0.1)
 
 def receiving(client_socket, client_address, client_id):
     global webots, chariots
@@ -206,6 +217,5 @@ def main():
         t.start()
 
         print(clientCount, " clients connected")
-
 
 main()
