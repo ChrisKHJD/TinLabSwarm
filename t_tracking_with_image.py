@@ -6,8 +6,8 @@ from inference import get_model
 MODELID = "robot-location-and-orientation/1"
 APIKEY = "CnyYmNzp3FktcouTB3d5"
 IMAGE_PATH = "testimage.jpg"
-FRAME_WIDTH = 960  #640
-FRAME_HEIGHT = 540  #480
+FRAME_WIDTH = 960
+FRAME_HEIGHT = 540
 model = get_model(model_id=MODELID, api_key=APIKEY)
 
 
@@ -77,7 +77,6 @@ def main():
     processed_frame = process_inference(frame, data)
 
     cv2.imshow('Picture', processed_frame)
-    # Wait for 5000 milliseconds (5 seconds)
     while True:
         key = cv2.waitKey(1) & 0xFF  # Wait for 1ms for a key event
         if key == ord('q'):  # Check if the pressed key is 'q'

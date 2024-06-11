@@ -57,7 +57,8 @@ def getPotential(robot):
     # objectivedistances = DistancesToOtherObjectives(robot)
     digitdistances = DistancesToDigits(robot)
     
-    otherrobotsPOT =  sum(0.05/x - 0.1/x**2 for x in robotdistances) # in formation
+    otherrobotsPOT =  sum(0.04/x - 0.12/x**2 for x in robotdistances) # in formation
+    # otherrobotsPOT =  sum(0.05/x - 0.1/x**2 for x in robotdistances) # in formation
     # otherrobotsPOT = sum(-0.05/x  for x in robotdistances) # not in formation
     #als de buiten de range zijn van de obstacle moet er geen kracht meer op werken
     obstaclesPOT = sum(-0.03/x if x <= 1 else 0 for x in obstacledistances)
@@ -97,9 +98,9 @@ def modify_position(position, items_to_modify):
     """Modifies the items in the position list based on the items_to_modify list."""
     for item, operation in items_to_modify:
         if operation == 'add':
-            position[item] += 0.02
+            position[item] += 0.01
         else:
-            position[item] -= 0.02
+            position[item] -= 0.01
     return position
 
 def process_robot(robot):
@@ -241,8 +242,14 @@ for robot in robots:
     InitialPos = robot.getField("translation")
     if(robot.getField("name").getSFString() == "robo0"):
         NewPos = [
-            13.4,
-            5.4,
+            16.8,
+            10,
+            0.1
+        ]
+    elif(robot.getField("name").getSFString() == "robo1"):
+        NewPos = [
+            16.8,
+            1,
             0.1
         ]
     else:
@@ -277,7 +284,7 @@ for obstacle in obstacles:
 
 # each index is for the robot with the same index in robot, each number is the index for the digitstripe
 goalAssignments = [-1] * len(robots)
-SERVER_ADDRESS = '145.137.54.68'  # Change this to your server's IP address
+SERVER_ADDRESS = '145.24.243.10'  # Change this to your server's IP address
 SERVER_PORT = 8000  # Change this to the port your server is listening on
 firstloop = True
 stepcounter = 0
@@ -298,7 +305,7 @@ while supervisor.step(timestep) != -1:
     for robot in robots:
         process_robot(robot)
     
-    if sendcounter == 20:
+    if sendcounter == 10:
         data = {'type': 'webots'}
         for i in range(0,amount_of_fysical_robots):
             position = robots[i].getField("translation").getSFVec3f()
@@ -313,6 +320,12 @@ while supervisor.step(timestep) != -1:
                 new_y = 0.95*y_mapping
             if new_y < (0.05*y_mapping):
                 new_y = 0.05*y_mapping
+            
+            #flip x axis
+            if(new_y > (y_mapping/2)):
+                new_y = (y_mapping/2) - (new_y - (y_mapping/2))
+            else:
+                new_y = (y_mapping/2) + ((y_mapping/2) - new_y)
             
             robot_position = {"x": new_x, "y": new_y}
             data[i] = robot_position

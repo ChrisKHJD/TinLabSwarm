@@ -25,7 +25,7 @@ DEF ROBOT0 MyFirstProto {
   rotation -0.30304980451548086 0.886424087054684 -0.3498759121065619 0.007613341503115398
   supervisor FALSE
   name "robo0"
-  BodyColor 0 1 0
+  BodyColor 0 1 1
   controller "<none>"
 }
 DEF ROBOT1 MyFirstProto {
@@ -33,7 +33,7 @@ DEF ROBOT1 MyFirstProto {
   rotation -0.6095586046432013 0.7700890939822396 -0.18815178669108282 0.004097061920326337
   supervisor FALSE
   name "robo1"
-  BodyColor 0 1 0
+  BodyColor 0 1 1
   controller "<none>"
 }
 DEF ROBOT2 MyFirstProto {
