@@ -284,7 +284,7 @@ for obstacle in obstacles:
 
 # each index is for the robot with the same index in robot, each number is the index for the digitstripe
 goalAssignments = [-1] * len(robots)
-SERVER_ADDRESS = '145.24.243.10'  # Change this to your server's IP address
+SERVER_ADDRESS = '145.24.243.16'  # Change this to your server's IP address
 SERVER_PORT = 8000  # Change this to the port your server is listening on
 firstloop = True
 stepcounter = 0

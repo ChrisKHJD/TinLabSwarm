@@ -75,7 +75,7 @@ def infer_frame(frame):
 
 
 #update this function so it takes a list of all robots that are detected, and if there are less robots detected than in the camera_chartios --> see wich one needs to be deleted by nearest neigbor
-def update_chariots(x, y, angle):
+def update_chariots_old(x, y, angle):
     global camera_chariots, amount_robots_seen
     if len(camera_chariots) < amount_robots_seen:
         camera_chariots[len(camera_chariots)] = (x, y, angle)
@@ -91,6 +91,36 @@ def update_chariots(x, y, angle):
         camera_chariots[nearest_robot_id] = (x, y, angle)
 
 
+def update_chariots(robot_positions):
+    global camera_chariots, amount_robots_seen
+
+    if len(camera_chariots) < len(robot_positions):
+        #loop door de robots die er al zijn
+        for robot_id, (robot_x, robot_y, _) in camera_chariots.items():
+            (nearest_x, nearest_y, nearest_angle) = (0,0,0)
+            min_distance = float("inf")
+            #loop door de robot posities die binnen komen en kies de dichtbijzijnste
+            for x, y, angle in robot_positions:
+                distance = math.sqrt((x - robot_x) ** 2 + (y - robot_y) ** 2)
+                if distance < min_distance:
+                    min_distance = distance
+                    (nearest_x, nearest_y, angle) = (x, y, angle)
+            camera_chariots[robot_id] = (nearest_x, nearest_y, nearest_angle)
+            robot_positions.remove((nearest_x, nearest_y, nearest_angle))
+        #add the remaining robots
+        for new_x, new_y, new_angle in robot_positions:
+            camera_chariots[len(camera_chariots)] = (new_x, new_y, new_angle)
+    else:
+        for x, y, angle in robot_positions:
+            nearest_robot_id = None
+            min_distance = float("inf")
+            for robot_id, (robot_x, robot_y, _) in camera_chariots.items():
+                distance = math.sqrt((x - robot_x) ** 2 + (y - robot_y) ** 2)
+                if distance < min_distance:
+                    min_distance = distance
+                    nearest_robot_id = robot_id
+            camera_chariots[nearest_robot_id] = (x, y, angle)
+
 def process_inference_and_update_chariots(frame, data):
     global amount_robots_seen, camera_chariots
     if frame is None or data is None:
@@ -101,7 +131,7 @@ def process_inference_and_update_chariots(frame, data):
 
     # er is altijd maar 1 element
     for element in data:
-        count = 0
+        update_chariots_list = []
         amount_robots_seen = len(element["predictions"])
         # if len(camera_chariots) > amount_robots_seen:
         #     camera_chariots = {} # slecht idee, want dan krijgen ze waarschijnlijk een ander id
@@ -122,7 +152,8 @@ def process_inference_and_update_chariots(frame, data):
             # Calculate the angle between top and bottom keypoints
             angle = calculate_angle(top_x, top_y, bottom_x, bottom_y)
 
-            update_chariots(x, y, angle)
+            update_chariots_list.append((x, y, angle))
+        update_chariots(update_chariots_list)
 
     return frame
 
