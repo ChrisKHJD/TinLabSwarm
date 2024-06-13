@@ -93,6 +93,7 @@ def update_chariots_old(x, y, angle):
 
 def update_chariots(robot_positions):
     global camera_chariots, amount_robots_seen
+    print(f"camera_chariots: {camera_chariots} {len(camera_chariots)}, robot_positions: {robot_positions} {len(robot_positions)}")
     if len(camera_chariots) < len(robot_positions):
         for robot_id, (robot_x, robot_y, _) in camera_chariots.items():
             (nearest_x, nearest_y, nearest_angle) = (0,0,0)
