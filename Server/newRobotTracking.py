@@ -104,6 +104,7 @@ def update_chariots(robot_positions):
                     min_distance = distance
                     (nearest_x, nearest_y, nearest_angle) = (x, y, angle)
             camera_chariots[robot_id] = (nearest_x, nearest_y, nearest_angle)
+            print(f"robot_positions: {robot_positions}, nearestX: {nearest_x}, nearestY: {nearest_y}, nearestAngle: {nearest_angle}")
             robot_positions.remove((nearest_x, nearest_y, nearest_angle))
         #add the remaining robots
         if len(camera_chariots) < len(robot_positions):

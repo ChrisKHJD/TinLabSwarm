@@ -90,28 +90,28 @@ def chariot_instructions():
                             try:
                                 client_socket.sendall(json.dumps(payload_send).encode("ascii"))
 
-                                match instr:
-                                    case "move_forward":
-                                        print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.GREEN}{payload_send}{Style.RESET_ALL}")
-                                        break
-                                    case "rotate_left":
-                                        print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.YELLOW}{payload_send}{Style.RESET_ALL}")
-                                        break
-                                    case "rotate_right":
-                                        print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.BLUE}{payload_send}{Style.RESET_ALL}")
-                                        break
-                                    case "stop":
-                                        print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.RED}{payload_send}{Style.RESET_ALL}")
-                                        break
+                                # match instr:
+                                #     case "move_forward":
+                                #         print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.GREEN}{payload_send}{Style.RESET_ALL}")
+                                #         break
+                                #     case "rotate_left":
+                                #         print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.YELLOW}{payload_send}{Style.RESET_ALL}")
+                                #         break
+                                #     case "rotate_right":
+                                #         print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.BLUE}{payload_send}{Style.RESET_ALL}")
+                                #         break
+                                #     case "stop":
+                                #         print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.RED}{payload_send}{Style.RESET_ALL}")
+                                #         break
 
-                                # if instr == "move_forward":
-                                #     print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.GREEN}{payload_send}{Style.RESET_ALL}")
-                                # elif instr == "rotate_left":
-                                #     print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.YELLOW}{payload_send}{Style.RESET_ALL}")
-                                # elif instr == "rotate_right":
-                                #     print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.BLUE}{payload_send}{Style.RESET_ALL}")
-                                # elif instr == "stop":
-                                #     print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.RED}{payload_send}{Style.RESET_ALL}")
+                                if instr == "move_forward":
+                                    print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.GREEN}{payload_send}{Style.RESET_ALL}")
+                                elif instr == "rotate_left":
+                                    print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.YELLOW}{payload_send}{Style.RESET_ALL}")
+                                elif instr == "rotate_right":
+                                    print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.BLUE}{payload_send}{Style.RESET_ALL}")
+                                elif instr == "stop":
+                                    print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.RED}{payload_send}{Style.RESET_ALL}")
 
                             except:
                                 print(f"nothing sent, connection lost with {chariot_id}")
