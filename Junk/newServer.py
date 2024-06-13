@@ -2,12 +2,10 @@ import socket
 import threading
 import json
 import math
-import time
-from datetime import datetime
 from time import sleep
 from random import randint
 
-from RobotTrackingCamera import getchariots, camera_view
+from Junk.RobotTrackingCamera import getchariots
 
 # HOST = "145.24.223.115"
 # PORT = 8000
