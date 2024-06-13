@@ -170,6 +170,7 @@ def receiving(client_socket, client_address, client_id):
 def main():
     global connectedClients, clientCount
 
+    get_camera_and_set_capture()
     print("start chariot_instructions thread")
     t = threading.Thread(
         target=chariot_instructions,
