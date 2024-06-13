@@ -136,7 +136,10 @@ def camera():
         with lock:
             if chariots:
                 for chariot_id in chariots.keys():
-                    chariots[chariot_id]["coordinate"] = chariot_coordinates[chariots[chariot_id]["camera_id"]]
+                    try:
+                        chariots[chariot_id]["coordinate"] = chariot_coordinates[chariots[chariot_id]["camera_id"]]
+                    except:
+                        continue
         # means fetching 5 frames each second
         sleep(0.2)
 
