@@ -130,7 +130,7 @@ def camera_view():
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
-        sleep(1)
+        sleep(.1)
 
 
 def list_available_cameras():
