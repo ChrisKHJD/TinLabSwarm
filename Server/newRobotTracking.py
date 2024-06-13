@@ -93,9 +93,7 @@ def update_chariots_old(x, y, angle):
 
 def update_chariots(robot_positions):
     global camera_chariots, amount_robots_seen
-
-    if len(camera_chariots) < len(robot_positions):
-        #loop door de robots die er al zijn
+    if len(camera_chariots) != len(robot_positions):
         for robot_id, (robot_x, robot_y, _) in camera_chariots.items():
             (nearest_x, nearest_y, nearest_angle) = (0,0,0)
             min_distance = float("inf")
@@ -104,12 +102,13 @@ def update_chariots(robot_positions):
                 distance = math.sqrt((x - robot_x) ** 2 + (y - robot_y) ** 2)
                 if distance < min_distance:
                     min_distance = distance
-                    (nearest_x, nearest_y, angle) = (x, y, angle)
+                    (nearest_x, nearest_y, nearest_angle) = (x, y, angle)
             camera_chariots[robot_id] = (nearest_x, nearest_y, nearest_angle)
             robot_positions.remove((nearest_x, nearest_y, nearest_angle))
         #add the remaining robots
-        for new_x, new_y, new_angle in robot_positions:
-            camera_chariots[len(camera_chariots)] = (new_x, new_y, new_angle)
+        if len(camera_chariots) < len(robot_positions):
+            for new_x, new_y, new_angle in robot_positions:
+                camera_chariots[len(camera_chariots)] = (new_x, new_y, new_angle)
     else:
         for x, y, angle in robot_positions:
             nearest_robot_id = None
