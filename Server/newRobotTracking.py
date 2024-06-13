@@ -129,7 +129,6 @@ def update_chariots(robot_positions):
         #         camera_chariots.pop(robot_id)
         camera_chariots = {robot_id: (robot_x, robot_y, angle) for robot_id, (robot_x, robot_y, angle) in
                            camera_chariots.items() if robot_id in id_list}
-
     else:
         for x, y, angle in robot_positions:
             nearest_robot_id = None

@@ -90,7 +90,16 @@ def update_chariots(robot_positions):
         #         camera_chariots.pop(robot_id)
         camera_chariots = {robot_id: (robot_x, robot_y, angle) for robot_id, (robot_x, robot_y, angle) in
                            camera_chariots.items() if robot_id in id_list}
-
+    else:
+        for x, y, angle in robot_positions:
+            nearest_robot_id = None
+            min_distance = float("inf")
+            for robot_id, (robot_x, robot_y, _) in camera_chariots.items():
+                distance = math.sqrt((x - robot_x) ** 2 + (y - robot_y) ** 2)
+                if distance < min_distance:
+                    min_distance = distance
+                    nearest_robot_id = robot_id
+            camera_chariots[nearest_robot_id] = (x, y, angle)
 
 def process_inference(frame, data):
     global amount_robots_seen
