@@ -7,7 +7,7 @@ import imutils
 from inference import get_model
 from time import sleep
 
-CAMERA_URL = "http://145.24.243.11:8080//shot.jpg"
+CAMERA_URL = "http://145.24.243.14:8080//shot.jpg"
 MODEL_ID = "robot-location-and-orientation/1"
 APIKEY = "CnyYmNzp3FktcouTB3d5"
 FRAME_WIDTH = 960
