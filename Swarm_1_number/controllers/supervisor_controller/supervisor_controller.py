@@ -293,7 +293,7 @@ sendcounter = 0
 x_mapping = 960
 y_mapping = 540
 
-amount_of_fysical_robots = 2
+amount_of_fysical_robots = 3
 
 # Main loop:
 while supervisor.step(timestep) != -1:
