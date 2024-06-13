@@ -8,7 +8,7 @@ from time import sleep
 from random import randint
 from colorama import Fore, Style
 
-from newRobotTracking import getchariots, camera_view
+from newRobotTracking import process_frame_and_return_chariots, get_camera_and_set_capture
 
 # HOST = "145.24.223.115"
 # PORT = 8000
@@ -137,7 +137,7 @@ def camera():
 
     while True:
         #process frame and get chariots
-        chariot_coordinates = getchariots()
+        chariot_coordinates = process_frame_and_return_chariots()
 
         with lock:
             if chariots:
@@ -178,6 +178,7 @@ def receiving(client_socket, client_address, client_id):
 def main():
     global connectedClients, clientCount
 
+    # get_camera_and_set_capture()
     print("start chariot_instructions thread")
     t = threading.Thread(
         target=chariot_instructions,

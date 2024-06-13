@@ -6,8 +6,9 @@ import numpy as np
 import imutils
 from inference import get_model
 from time import sleep
+import time
 
-CAMERA_URL = "http://145.24.243.11:8080//shot.jpg"
+CAMERA_URL = "http://145.24.238.54:8080//shot.jpg"
 MODEL_ID = "robot-location-and-orientation/1"
 APIKEY = "CnyYmNzp3FktcouTB3d5"
 FRAME_WIDTH = 960
@@ -16,7 +17,6 @@ FRAME_HEIGHT = 540
 model = get_model(model_id=MODEL_ID, api_key=APIKEY)
 camera_chariots = {}
 amount_robots_seen = 0
-cap = None
 
 
 def calculate_angle(front_x, front_y, back_x, back_y):
@@ -25,7 +25,7 @@ def calculate_angle(front_x, front_y, back_x, back_y):
     return math.degrees(math.atan2(dy, dx))
 
 
-def fetch_frame_phone():
+def fetch_frame():
     try:
         # print("1")
         img_resp = requests.get(CAMERA_URL)
@@ -38,27 +38,6 @@ def fetch_frame_phone():
     except Exception as e:
         print("Error fetching frame:", e)
         return None
-
-
-def fetch_frame_gopro():
-    ret, frame = cap.read()
-    frame = imutils.resize(frame, width=FRAME_WIDTH, height=FRAME_HEIGHT)
-    return frame
-
-
-def get_camera_and_set_capture():
-    global cap
-    index = 0
-    available_cameras = []
-    while True:
-        cap = cv2.VideoCapture(index)
-        if not cap.read()[0]:
-            break
-        else:
-            available_cameras.append(index)
-        cap.release()
-        index += 1
-    cap = cv2.VideoCapture(available_cameras[1])
 
 
 def infer_frame(frame):
@@ -74,7 +53,6 @@ def infer_frame(frame):
         return None
 
 
-#update this function so it takes a list of all robots that are detected, and if there are less robots detected than in the camera_chartios --> see wich one needs to be deleted by nearest neigbor
 def update_chariots(x, y, angle):
     global camera_chariots, amount_robots_seen
     if len(camera_chariots) < amount_robots_seen:
@@ -91,8 +69,8 @@ def update_chariots(x, y, angle):
         camera_chariots[nearest_robot_id] = (x, y, angle)
 
 
-def process_inference_and_update_chariots(frame, data):
-    global amount_robots_seen, camera_chariots
+def process_inference(frame, data):
+    global amount_robots_seen
     if frame is None or data is None:
         print("no frame or no data")
         return None
@@ -103,21 +81,33 @@ def process_inference_and_update_chariots(frame, data):
     for element in data:
         count = 0
         amount_robots_seen = len(element["predictions"])
-        # if len(camera_chariots) > amount_robots_seen:
-        #     camera_chariots = {} # slecht idee, want dan krijgen ze waarschijnlijk een ander id
         # voor elke robot
         for prediction in element["predictions"]:
             x = int(prediction["x"])
             y = int(prediction["y"])
+            width = int(prediction["width"])
+            height = int(prediction["height"])
+
+            x1 = int(x - (width / 2))
+            y1 = int(y - (height / 2))
+            x2 = int(x + (width / 2))
+            y2 = int(y + (height / 2))
+
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
             for keypoint in prediction["keypoints"]:
                 keypoint_x = int(keypoint["x"])
                 keypoint_y = int(keypoint["y"])
                 class_name = keypoint["class_name"]
                 if class_name == "top":
+                    color = (0, 0, 255)
                     top_x, top_y = keypoint_x, keypoint_y
                 elif class_name == "bottom":
+                    color = (255, 0, 0)
                     bottom_x, bottom_y = keypoint_x, keypoint_y
+                else:
+                    color = (0, 255, 0)
+                cv2.circle(frame, (keypoint_x, keypoint_y), 5, color, -1)
 
             # Calculate the angle between top and bottom keypoints
             angle = calculate_angle(top_x, top_y, bottom_x, bottom_y)
@@ -126,13 +116,37 @@ def process_inference_and_update_chariots(frame, data):
 
     return frame
 
+def main():
+    frame_counter = 0
+    start_time = time.time()
 
-def process_frame_and_return_chariots():
-    frame = fetch_frame_phone()
+    while True:
+        frame = fetch_frame()
+        data = infer_frame(frame)
 
-    data = infer_frame(frame)
+        processed_frame = process_inference(frame, data)
 
-    processed_frame = process_inference_and_update_chariots(frame, data)
-    # print(f"camera detected chariots: {camera_chariots}")
 
-    return camera_chariots
+
+        # Calculate elapsed time and add frame
+        frame_counter += 1
+        elapsed_time = time.time() - start_time
+
+        # Print frames processed per second every second
+        if elapsed_time >= 1.0:
+            print(f"Frames processed in the last second: {frame_counter}")
+            frame_counter = 0
+            start_time = time.time()
+
+        print(camera_chariots)
+        if processed_frame is not None:
+            cv2.imshow("Camera", processed_frame)
+
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
+
+    cv2.destroyAllWindows()
+
+
+if __name__ == "__main__":
+    main()

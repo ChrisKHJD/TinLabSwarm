@@ -8,7 +8,7 @@ from time import sleep
 from random import randint
 from colorama import Fore, Style
 
-from newRobotTracking import getchariots, camera_view
+from newRobotTracking import process_frame_and_return_chariots
 
 # HOST = "145.24.223.115"
 # PORT = 8000
@@ -136,7 +136,7 @@ def camera():
     global chariots
 
     while True:        
-        chariot_coordinates = getchariots()
+        chariot_coordinates = process_frame_and_return_chariots()
 
         if chariots and len(chariots) <= len(chariot_coordinates):
             i = 0

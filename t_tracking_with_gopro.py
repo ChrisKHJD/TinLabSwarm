@@ -6,6 +6,7 @@ import numpy as np
 import imutils
 from inference import get_model
 from time import sleep
+import time
 
 CAMERA_URL = "http://145.24.238.54:8080//shot.jpg"
 MODEL_ID = "robot-location-and-orientation/1"
@@ -18,20 +19,10 @@ camera_chariots = {}
 amount_robots_seen = 0
 
 
-def calculate_angle(x1, y1, x2, y2):
-    # Calculate the differences in coordinates
-    delta_x = x1 - x2
-    delta_y = y1 - y2
-
-    # Calculate the angle using arctan2 and convert it to degrees
-    angle_rad = math.atan2(delta_y, delta_x)
-    angle_deg = math.degrees(angle_rad)
-
-    # Ensure the angle is between 0 and 360 degrees
-    # if angle_deg < 0:
-    #     angle_deg += 360
-    
-    return angle_deg
+def calculate_angle(front_x, front_y, back_x, back_y):
+    dx = front_x - back_x
+    dy = front_y - back_y
+    return math.degrees(math.atan2(dy, dx))
 
 
 def fetch_frame():
@@ -63,7 +54,7 @@ def infer_frame(frame):
 
 
 def update_chariots(x, y, angle):
-    global camera_chariots
+    global camera_chariots, amount_robots_seen
     if len(camera_chariots) < amount_robots_seen:
         camera_chariots[len(camera_chariots)] = (x, y, angle)
     else:
@@ -119,70 +110,15 @@ def process_inference(frame, data):
                 cv2.circle(frame, (keypoint_x, keypoint_y), 5, color, -1)
 
             # Calculate the angle between top and bottom keypoints
-            angle = calculate_angle(bottom_x, bottom_y, top_x, top_y)
+            angle = calculate_angle(top_x, top_y, bottom_x, bottom_y)
 
             update_chariots(x, y, angle)
 
     return frame
 
 
-# not used
-def process_inference_noview(data):
-    global amount_robots_seen
-    if data is None:
-        print("no data")
-        return None
-
-    # Since there is always only one element in data
-    for element in data:
-        amount_robots_seen = 0
-        for prediction in element["predictions"]:
-            x = int(prediction["x"])
-            y = int(prediction["y"])
-            amount_robots_seen+= 1
-            top_x, top_y, bottom_x, bottom_y = None, None, None, None
-
-            for keypoint in prediction["keypoints"]:
-                keypoint_x = int(keypoint["x"])
-                keypoint_y = int(keypoint["y"])
-                class_name = keypoint["class_name"]
-
-                if class_name == "top":
-                    top_x, top_y = keypoint_x, keypoint_y
-                elif class_name == "bottom":
-                    bottom_x, bottom_y = keypoint_x, keypoint_y
-
-            if (
-                top_x is not None
-                and top_y is not None
-                and bottom_x is not None
-                and bottom_y is not None
-            ):
-                # Calculate the angle between top and bottom keypoints
-                angle = calculate_angle(bottom_x, bottom_y, top_x, top_y)
-
-                # Update chariots with the calculated angle
-                update_chariots(x, y, angle)
-    
 processed_frame = None
 
-
-def getchariots():
-    global processed_frame
-    
-    frame = fetch_frame()
-
-    data = infer_frame(frame)
-
-
-    # for with view
-    processed_frame = process_inference(frame, data)
-    # for without view
-    # processed_frame = None
-    # process_inference_noview(data)
-    # print(f"camera detected chariots: {camera_chariots}")
-
-    return camera_chariots
 
 def camera_view():
     global processed_frame
@@ -197,19 +133,50 @@ def camera_view():
         sleep(1)
 
 
-def main():
+def list_available_cameras():
+    index = 0
+    arr = []
     while True:
-        frame = fetch_frame()
+        cap = cv2.VideoCapture(index)
+        if not cap.read()[0]:
+            break
+        else:
+            arr.append(index)
+        cap.release()
+        index += 1
+    return arr
+
+
+def main():
+    # Print available webcams
+    available_cameras = list_available_cameras()
+    print("Available webcams:", available_cameras)
+
+    # Initialize the webcam (using the first available camera)
+    cap = cv2.VideoCapture(available_cameras[1])
+
+    frame_counter = 0
+    start_time = time.time()
+    while True:
+        #frame = fetch_frame()
+        ret, frame = cap.read()
+        frame = imutils.resize(frame, width=FRAME_WIDTH, height=FRAME_HEIGHT)
         data = infer_frame(frame)
 
-        # for with view
         processed_frame = process_inference(frame, data)
 
-        # for without view
-        # processed_frame = None
-        # process_inference_noview(data)
-
         print(camera_chariots)
+
+        # Calculate elapsed time and add frame
+        frame_counter += 1
+        elapsed_time = time.time() - start_time
+
+        # Print frames processed per second every second
+        if elapsed_time >= 1.0:
+            print(f"Frames processed in the last second: {frame_counter}")
+            frame_counter = 0
+            start_time = time.time()
+
         if processed_frame is not None:
             cv2.imshow("Camera", processed_frame)
 
