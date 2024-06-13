@@ -179,7 +179,7 @@ def process_inference_and_update_chariots(frame, data):
 
 def process_frame_and_return_chariots():
     # frame = fetch_frame_phone()
-    ret, frame = fetch_frame_gopro()
+    frame = fetch_frame_gopro()
 
     data = infer_frame(frame)
 
