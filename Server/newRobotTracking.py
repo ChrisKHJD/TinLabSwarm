@@ -93,24 +93,42 @@ def update_chariots_old(x, y, angle):
 
 def update_chariots(robot_positions):
     global camera_chariots, amount_robots_seen
-    addnewrobots = len(camera_chariots) < len(robot_positions)
-    if len(camera_chariots) != len(robot_positions):
+    if len(camera_chariots) < len(robot_positions):
         for robot_id, (robot_x, robot_y, _) in camera_chariots.items():
             (nearest_x, nearest_y, nearest_angle) = (0,0,0)
             min_distance = float("inf")
             #loop door de robot posities die binnen komen en kies de dichtbijzijnste
-            for x, y, angle in robot_positions:
+            if len(robot_positions) > 0:
+                for x, y, angle in robot_positions:
+                    distance = math.sqrt((x - robot_x) ** 2 + (y - robot_y) ** 2)
+                    if distance < min_distance:
+                        min_distance = distance
+                        (nearest_x, nearest_y, nearest_angle) = (x, y, angle)
+                camera_chariots[robot_id] = (nearest_x, nearest_y, nearest_angle)
+                print(f"robot_positions: {robot_positions}, nearestX: {nearest_x}, nearestY: {nearest_y}, nearestAngle: {nearest_angle}")
+                robot_positions.remove((nearest_x, nearest_y, nearest_angle))
+        #add the remaining robots
+        for new_x, new_y, new_angle in robot_positions:
+            camera_chariots[len(camera_chariots)] = (new_x, new_y, new_angle)
+    elif len(camera_chariots) > len(robot_positions):
+        id_list = []
+        for x, y, angle in robot_positions:
+            nearest_robot_id = None
+            min_distance = float("inf")
+            for robot_id, (robot_x, robot_y, _) in camera_chariots.items():
                 distance = math.sqrt((x - robot_x) ** 2 + (y - robot_y) ** 2)
                 if distance < min_distance:
                     min_distance = distance
-                    (nearest_x, nearest_y, nearest_angle) = (x, y, angle)
-            camera_chariots[robot_id] = (nearest_x, nearest_y, nearest_angle)
-            print(f"robot_positions: {robot_positions}, nearestX: {nearest_x}, nearestY: {nearest_y}, nearestAngle: {nearest_angle}")
-            robot_positions.remove((nearest_x, nearest_y, nearest_angle))
-        #add the remaining robots
-        if addnewrobots:
-            for new_x, new_y, new_angle in robot_positions:
-                camera_chariots[len(camera_chariots)] = (new_x, new_y, new_angle)
+                    nearest_robot_id = robot_id
+            camera_chariots[nearest_robot_id] = (x, y, angle)
+            id_list.append(nearest_robot_id)
+        #welke van camera_chartiots is over? die removen
+        # for robot_id, (robot_x, robot_y, _) in camera_chariots.items():
+        #     if not (robot_id in id_list):
+        #         camera_chariots.pop(robot_id)
+        camera_chariots = {robot_id: (robot_x, robot_y, angle) for robot_id, (robot_x, robot_y, angle) in
+                           camera_chariots.items() if robot_id in id_list}
+
     else:
         for x, y, angle in robot_positions:
             nearest_robot_id = None
