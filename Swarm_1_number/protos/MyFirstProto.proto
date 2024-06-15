@@ -24,7 +24,7 @@ PROTO MyFirstProto [
         appearance PBRAppearance {
           baseColor IS BodyColor
           roughness 0
-          metalness 1
+          metalness 0
         }
         geometry Box {
           size 0.7 0.7 0.2

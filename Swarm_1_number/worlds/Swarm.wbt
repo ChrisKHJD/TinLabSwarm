@@ -6,10 +6,11 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 IMPORTABLE EXTERNPROTO "../protos/MyFirstProto.proto"
 
 WorldInfo {
+  basicTimeStep 64
 }
 Viewpoint {
-  orientation 0.00022681903190826738 0.9999999498100699 -0.00022120801183219934 1.5832992039740443
-  position 10.05712350549713 6.580840907699718 27.535863401475464
+  orientation 0.00022678625147569845 0.9999999509600187 -0.00021598137968722292 1.6070492027958243
+  position 10.598836430574758 6.5583754011716175 26.520899723694214
 }
 TexturedBackground {
 }
@@ -19,13 +20,15 @@ DEF ARENA RectangleArena {
   translation 9.6 5.4 0
   floorSize 19.2 10.8
   floorTileSize 4 4
+  wallThickness 0
+  wallHeight 0
 }
 DEF ROBOT0 MyFirstProto {
   translation 2.400029103757369 5.399998145024281 0.08998559296894555
   rotation -0.30304980451548086 0.886424087054684 -0.3498759121065619 0.007613341503115398
   supervisor FALSE
   name "robo0"
-  BodyColor 0 1 1
+  BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT1 MyFirstProto {
@@ -33,7 +36,7 @@ DEF ROBOT1 MyFirstProto {
   rotation -0.6095586046432013 0.7700890939822396 -0.18815178669108282 0.004097061920326337
   supervisor FALSE
   name "robo1"
-  BodyColor 0 1 1
+  BodyColor 0 1 0
   controller "<none>"
 }
 DEF ROBOT2 MyFirstProto {
@@ -41,7 +44,7 @@ DEF ROBOT2 MyFirstProto {
   rotation -0.8305451839762689 0.5569477217471033 0.0019830820801299783 0.0029536445909855527
   supervisor FALSE
   name "robo2"
-  BodyColor 0 1 0
+  BodyColor 1 0 0
   controller "<none>"
 }
 DEF ROBOT3 MyFirstProto {
@@ -49,7 +52,7 @@ DEF ROBOT3 MyFirstProto {
   rotation -0.981700636975728 0.19041821173609663 0.0021826590839459105 0.002550140390936469
   supervisor FALSE
   name "robo3"
-  BodyColor 0 1 0
+  BodyColor 1 0 0
   controller "<none>"
 }
 DEF ROBOT4 MyFirstProto {
@@ -57,7 +60,7 @@ DEF ROBOT4 MyFirstProto {
   rotation -0.9700050060575428 0.2430799465123097 0.0015581485419975756 0.002551484473045987
   supervisor FALSE
   name "robo4"
-  BodyColor 0 1 0
+  BodyColor 1 0 0
   controller "<none>"
 }
 DEF ROBOT5 MyFirstProto {
@@ -65,7 +68,7 @@ DEF ROBOT5 MyFirstProto {
   rotation -0.40407791126684484 0.9147232724442769 0.0015415819981960007 0.005288414320442805
   supervisor FALSE
   name "robo5"
-  BodyColor 0 1 0
+  BodyColor 1 0 0
   controller "<none>"
 }
 DEF ROBOT6 MyFirstProto {
@@ -73,7 +76,7 @@ DEF ROBOT6 MyFirstProto {
   rotation -0.4567559930505526 0.8895790903636815 -0.004796331945183978 0.006793882072152227
   supervisor FALSE
   name "robo6"
-  BodyColor 0 1 0
+  BodyColor 1 0 0
   controller "<none>"
 }
 DEF OBSTACLE0 MyFirstProto {
@@ -97,7 +100,7 @@ DEF OBJECTIVE0 MyFirstProto {
   rotation 0 0.9989280260975493 0.04629037347931279 2.1339157092306256e-17
   supervisor FALSE
   name "objective"
-  BodyColor 1 0 0
+  BodyColor 0 1 1
   controller "<none>"
 }
 Robot {
@@ -208,4 +211,18 @@ DEF DigitBottomRight0 Robot {
   ]
   name "robot(6)"
   controller "<none>"
+}
+Solid {
+  translation 9.6 5.4 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 1 0.5 0
+        metalness 0
+      }
+      geometry Plane {
+        size 6.8 3.8
+      }
+    }
+  ]
 }
