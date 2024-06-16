@@ -34,6 +34,7 @@ from machine import Pin, PWM
 import json
 from time import sleep
 import ubinascii
+import socket
 
 # Constants
 BUILT_IN_LED_PIN = 25
@@ -347,9 +348,9 @@ def get_mac_address():
 
 def main():
     robot = RobotController()
-    #robot.connect_wifi()
+    robot.connect_wifi()
     #robot.serve_requests()
-    #robot.main_loop()
+    robot.main_loop()
     
     #robot.move_forward()
     #robot.move_backward()
