@@ -12,7 +12,7 @@ from newRobotTracking import process_frame_and_return_chariots, get_camera_and_s
 
 # HOST = "145.24.223.115"
 # PORT = 8000
-HOST = "145.24.243.10"
+HOST = "145.24.243.16"
 PORT = 8000
 lock = threading.Lock()  # For synchronizing access to shared data
 
@@ -21,20 +21,6 @@ clientCount = 0
 connectedClients = {}  #id, client_socket, client_address
 webots = {}  #id, location, last message time
 chariots = {} #id, location, direction, last message time
-
-#format used for instructions calculation
-# webots = {
-#     0: (15, 20),  # Target position for robot_0
-#     1: (25, 30),  # Target position for robot_1
-#     2: (5, 15),   # Target position for robot_2
-# }
-#
-# chariots = {
-#     0: (10, 10, 30),  # Real position and orientation for robot_0
-#     1: (20, 25, 60),  # Real position and orientation for robot_1
-#     2: (2, 10, 90),   # Real position and orientation for robot_2
-# }
-
 
 # Calculate the angle between two points.
 def angle_to_target(front_x, front_y, target_x, target_y, orientation):
@@ -59,14 +45,14 @@ def distance(x1, y1, x2, y2):
 
 
 # Generate movement instructions for robot to reach target. test threshold value
-def get_instruction(robot_id, target_x, target_y, real_x, real_y, orientation, threshold=20):
+def get_instruction(camera_id, target_x, target_y, real_x, real_y, orientation, threshold=20):
     instruction = ""
     angle_diff = angle_to_target(real_x, real_y, target_x, target_y, orientation)
-    print(f"{robot_id}: \t {Fore.CYAN}angle_diff: {angle_diff}{Style.RESET_ALL}, {Fore.WHITE}orientation: {orientation}{Style.RESET_ALL}, {Fore.MAGENTA}distance: {distance(real_x, real_y, target_x, target_y)}{Style.RESET_ALL}")
+    print(f"{camera_id}: \t {Fore.CYAN}angle_diff: {angle_diff}{Style.RESET_ALL}, {Fore.WHITE}orientation: {orientation}{Style.RESET_ALL}, {Fore.MAGENTA}distance: {distance(real_x, real_y, target_x, target_y)}{Style.RESET_ALL}")
 
     if distance(real_x, real_y, target_x, target_y) <= threshold:
         instruction = 'stop'
-    elif abs(angle_diff) < 30:  # Within 5 degrees, move forward (maybe lower this value)
+    elif abs(angle_diff) < 15:  # Within 5 degrees, move forward (maybe lower this value)
         instruction = 'move_forward'
     elif angle_diff > 0:
         instruction = 'rotate_right'
@@ -99,25 +85,33 @@ def chariot_instructions():
 
                             payload_send = {
                                 "instruction": instr
-                                # "instruction": "turn_left"  #instr
-                                # "instruction": "turn_right"
-                                # "instruction": "move"
-                                # "instruction": "stop"
-                                # "instruction": "led_on"
                             }
 
                             try:
                                 client_socket.sendall(json.dumps(payload_send).encode("ascii"))
-                                printings = chariots[chariot_id]["camera_id"]
+
+                                # match instr:
+                                #     case "move_forward":
+                                #         print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.GREEN}{payload_send}{Style.RESET_ALL}")
+                                #         break
+                                #     case "rotate_left":
+                                #         print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.YELLOW}{payload_send}{Style.RESET_ALL}")
+                                #         break
+                                #     case "rotate_right":
+                                #         print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.BLUE}{payload_send}{Style.RESET_ALL}")
+                                #         break
+                                #     case "stop":
+                                #         print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.RED}{payload_send}{Style.RESET_ALL}")
+                                #         break
 
                                 if instr == "move_forward":
-                                    print(f"{printings}, \t instruction send: {Fore.GREEN}{payload_send}{Style.RESET_ALL}")
+                                    print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.GREEN}{payload_send}{Style.RESET_ALL}")
                                 elif instr == "rotate_left":
-                                    print(f"{printings}, \t instruction send: {Fore.YELLOW}{payload_send}{Style.RESET_ALL}")
+                                    print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.YELLOW}{payload_send}{Style.RESET_ALL}")
                                 elif instr == "rotate_right":
-                                    print(f"{printings}, \t instruction send: {Fore.BLUE}{payload_send}{Style.RESET_ALL}")
+                                    print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.BLUE}{payload_send}{Style.RESET_ALL}")
                                 elif instr == "stop":
-                                    print(f"{printings}, \t instruction send: {Fore.RED}{payload_send}{Style.RESET_ALL}")
+                                    print(f"{chariots[chariot_id]['camera_id']}, \t instruction send: {Fore.RED}{payload_send}{Style.RESET_ALL}")
 
                             except:
                                 print(f"nothing sent, connection lost with {chariot_id}")
@@ -129,7 +123,7 @@ def chariot_instructions():
                                 break
                 except Exception as e:
                     print(f"chariot_instructions something went wrong {chariot_id} {e}")
-        sleep(0.5)
+        sleep(0.2)
 
 
 def camera():
@@ -141,17 +135,18 @@ def camera():
 
         with lock:
             if chariots:
-                for chariot_id in sorted(chariots.keys()):
-                    chariots[chariot_id]["coordinate"] = chariot_coordinates[chariots[chariot_id]["camera_id"]]
-        # means fetching 10 frames each second
-        sleep(0.1)
+                for chariot_id in chariots.keys():
+                    try:
+                        chariots[chariot_id]["coordinate"] = chariot_coordinates[chariots[chariot_id]["camera_id"]]
+                    except:
+                        continue
+        # means fetching 5 frames each second
+        sleep(0.2)
 
 def receiving(client_socket, client_address, client_id):
     global webots, chariots
 
     while True:
-        # print(f"{client_id}, trying to receive")
-
         try:
             payload_json = json.loads(client_socket.recv(1024).decode())
             with lock:
@@ -178,7 +173,7 @@ def receiving(client_socket, client_address, client_id):
 def main():
     global connectedClients, clientCount
 
-    # get_camera_and_set_capture()
+    get_camera_and_set_capture()
     print("start chariot_instructions thread")
     t = threading.Thread(
         target=chariot_instructions,

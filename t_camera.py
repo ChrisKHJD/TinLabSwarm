@@ -3,10 +3,13 @@ import requests
 import cv2
 import numpy as np
 import imutils
+import time
 
 # Replace the below URL with your own. Make sure to add "/shot.jpg" at last.
-url = "http://145.24.243.9:8080//shot.jpg"
+url = "http://145.24.243.14:8080//shot.jpg"
 
+frame_counter = 0
+start_time = time.time()
 # While loop to continuously fetching data from the Url
 while True:
 	img_resp = requests.get(url)
@@ -19,5 +22,14 @@ while True:
 	# Press Esc key to exit
 	if cv2.waitKey(1) == 27:
 		break
+
+	frame_counter += 1
+	elapsed_time = time.time() - start_time
+
+	# Print frames processed per second every second
+	if elapsed_time >= 1.0:
+		print(f"Frames processed in the last second: {frame_counter}")
+		frame_counter = 0
+		start_time = time.time()
 
 cv2.destroyAllWindows()
