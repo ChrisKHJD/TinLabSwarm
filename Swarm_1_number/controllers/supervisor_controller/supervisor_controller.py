@@ -174,7 +174,7 @@ def send_json_data(data):
 ROBOT_STEP_VALUE = 0.04
 TIMESTEPS_BETWEEN_DATA_SENDING = 5
 TIMESTEPS_BETWEEN_NUMBER_CHANGE = 150
-SERVER_ADDRESS = '145.24.243.16'  # Change this to your server's IP address
+SERVER_ADDRESS = '145.24.243.144'  # Change this to your server's IP address
 SERVER_PORT = 8000  # Change this to the port your server is listening on
 FirstNumberToShow = 2
 DIGIT_CUBE_SIZE = 3
@@ -236,9 +236,9 @@ for i in range(1):
 for robot in robots:
     InitialPos = robot.getField("translation")
     if robot.getField("name").getSFString() == "robo0":
-        NewPos = [16.8, 10, 0.1]
+        NewPos = [8.8, 10, 0.1]
     elif robot.getField("name").getSFString() == "robo1":
-        NewPos = [16.8, 1, 0.1]
+        NewPos = [8.8, 1, 0.1]
     else:
         NewPos = [arena_size[0] * random(), arena_size[1] * random(), 0.1]
     InitialPos.setSFVec3f(NewPos)

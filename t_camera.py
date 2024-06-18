@@ -6,7 +6,7 @@ import imutils
 import time
 
 # Replace the below URL with your own. Make sure to add "/shot.jpg" at last.
-url = "http://145.24.243.14:8080//shot.jpg"
+url = "http://145.137.119.246:8080//shot.jpg"
 
 frame_counter = 0
 start_time = time.time()
