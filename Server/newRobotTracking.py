@@ -58,7 +58,7 @@ def get_camera_and_set_capture():
             available_cameras.append(index)
         cap.release()
         index += 1
-    cap = cv2.VideoCapture(available_cameras[1])
+    cap = cv2.VideoCapture(available_cameras[2])
 
 
 def infer_frame(frame):

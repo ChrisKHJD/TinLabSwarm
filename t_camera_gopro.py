@@ -23,7 +23,7 @@ available_cameras = list_available_cameras()
 print("Available webcams:", available_cameras)
 
 # Initialize the webcam (using the first available camera)
-cap = cv2.VideoCapture(available_cameras[1])
+cap = cv2.VideoCapture(available_cameras[2])
 
 if not cap.isOpened():
     print("Error: Could not open webcam.")

@@ -12,7 +12,7 @@ from newRobotTracking import process_frame_and_return_chariots, get_camera_and_s
 
 # HOST = "145.24.223.115"
 # PORT = 8000
-HOST = "145.24.243.16"
+HOST = "145.24.243.144"
 PORT = 8000
 lock = threading.Lock()  # For synchronizing access to shared data
 

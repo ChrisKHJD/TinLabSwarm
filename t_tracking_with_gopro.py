@@ -153,7 +153,7 @@ def main():
     print("Available webcams:", available_cameras)
 
     # Initialize the webcam (using the first available camera)
-    cap = cv2.VideoCapture(available_cameras[1])
+    cap = cv2.VideoCapture(available_cameras[2])
 
     frame_counter = 0
     start_time = time.time()
