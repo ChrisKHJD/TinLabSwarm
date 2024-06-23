@@ -74,23 +74,6 @@ def infer_frame(frame):
         return None
 
 
-#update this function so it takes a list of all robots that are detected, and if there are less robots detected than in the camera_chartios --> see wich one needs to be deleted by nearest neigbor
-def update_chariots_old(x, y, angle):
-    global camera_chariots, amount_robots_seen
-    if len(camera_chariots) < amount_robots_seen:
-        camera_chariots[len(camera_chariots)] = (x, y, angle)
-    else:
-        # om ervoor te zorgen dat robot 1, robot 1 blijft
-        nearest_robot_id = None
-        min_distance = float("inf")
-        for robot_id, (robot_x, robot_y, _) in camera_chariots.items():
-            distance = math.sqrt((x - robot_x) ** 2 + (y - robot_y) ** 2)
-            if distance < min_distance:
-                min_distance = distance
-                nearest_robot_id = robot_id
-        camera_chariots[nearest_robot_id] = (x, y, angle)
-
-
 def update_chariots(robot_positions):
     global camera_chariots, amount_robots_seen
     # print(f"camera_chariots: {camera_chariots} {len(camera_chariots)}, robot_positions: {robot_positions} {len(robot_positions)}")
